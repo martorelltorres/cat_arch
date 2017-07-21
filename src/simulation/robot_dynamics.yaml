@@ -1,0 +1,38 @@
+# robot dynamics model
+# WARNING!!!
+# The thrusters allocation matrix "b" is defined in the code. It can not be changed using parameters.
+
+vehicle_name: "robot"
+
+dynamics/robot/thrusters_topic: "/robot/thrusters_setpoints"
+dynamics/robot/odom_topic_name: "/robot/odom_dynamics"
+
+frames/frame_id: "/robot"
+frames/world_frame_id: "/map"
+
+dynamics/robot/period: 0.05
+dynamics/robot/mass: 10.5
+dynamics/robot/gravity_center: [0.0, 0.0, 0.01]
+dynamics/robot/g: 9.81
+dynamics/robot/density: 1030.0
+dynamics/robot/radius: 0.6
+dynamics/robot/surface_radius: 0.15
+
+dynamics/robot/ctf: 0.000020833333  # TODO
+dynamics/robot/ctb: 0.000020833333  # TODO
+
+dynamics/robot/number_of_thrusters: 2
+dynamics/robot/thrusters_matrix: [[1.0, 1.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[-0.16, 0.16]]
+dynamics/robot/tensor: [0.7, 0.0, 0.0, 0.0, 8.0, 0.0, 0.0, 0.0, 8.0]   # TODO
+dynamics/robot/damping: [-20.0, -60.0, -60.0, -8.0, -8.0, -8.0]   # TODO
+dynamics/robot/quadratic_damping: [-30.0, -60.0, -60.0, 0.0, -10.0, -10.0]   # TODO
+
+# Meters and Rads [X, Y, Z, Roll, Pitch, Yaw]
+dynamics/robot/initial_pose: [0.0, 0.0, 0.12, 0.0, 0.0, 0.0]
+dynamics/robot/initial_velocity: [0, 0, 0, 0, 0, 0]
+
+# Water currents simulation
+dynamics/current_mean: [0.0, 0.0, 0.0]
+dynamics/current_sigma: [0.01, 0.01, 0.01]
+dynamics/current_min: [-0.0, -0.0, -0.0]
+dynamics/current_max: [0.0, 0.0, 0.0]
