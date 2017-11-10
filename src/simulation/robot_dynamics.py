@@ -6,16 +6,17 @@ detection has been implemented.@@"""
 
 # Basic ROS imports
 import roslib
-roslib.load_manifest('simulation')
+roslib.load_manifest('xiroi')
 import rospy
 import PyKDL
-
+ 
 # Import msgs
 from nav_msgs.msg import Odometry
-from control.msg import Setpoints
+from xiroi.msg import Setpoints
 
 # More imports
 import math
+from math import pi, floor
 import numpy as np
 import tf
 
@@ -129,9 +130,11 @@ class Dynamics :
 
 
     def update_thrusters(self, thrusters) :
-        """ Thruster callback, input in rpm """
+        """ Thruster callback, input in   """
         self.old_u = self.u
-        self.u = np.array( thrusters.setpoints ).clip(min=-1, max=1)
+        self.u = np.array(thrusters.setpoints ).clip(min=-1, max=1)
+        # TODO change this hardcoded 1200 to a param
+        self.u = self.u * 1200.0
 
     def compute_currents(self):
         """ Water currents, returns a velocity """
@@ -237,7 +240,7 @@ class Dynamics :
         return g
 
 
-    def inverse_dynamic(self, pos, vel, u, f, current) :
+    def inverse_dynamic(self, pos, vel, u, current) :
         """ Given the setpoint for each thruster, the previous velocity
             and the previous position computes the v_dot """
 
@@ -246,7 +249,7 @@ class Dynamics :
         c = self.coriolis_matrix(vel)
         g = self.gravity(pos)
         c_v = np.dot((c-d), vel+current)
-        v_dot = np.dot(self.IM, (t-f-c_v-g))
+        v_dot = np.dot(self.IM, (t-c_v-g))
 
         # Transforms a matrix into an array
         v_dot = np.squeeze(np.asarray(v_dot))
@@ -283,9 +286,9 @@ class Dynamics :
         return p_dot
 
 
-    def step(self, pos, vel, u, f, current):
+    def step(self, pos, vel, u, current):
         """ Compute kinematics and inverse dynamics """
-        return self.kinematics(pos, vel), self.inverse_dynamic(pos, vel, u, f, current)
+        return self.kinematics(pos, vel), self.inverse_dynamic(pos, vel, u, current)
 
 
     def iterate(self):
@@ -294,10 +297,10 @@ class Dynamics :
         current = self.compute_currents()
 
         # Runge-Kutta, 4th order
-        k1_pos, k1_vel = self.step(self.p, self.v, self.old_u, self.old_f, current)
-        k2_pos, k2_vel = self.step(self.p + self.period * 0.5 * k1_pos, self.v + self.period * 0.5 * k1_vel, 0.5 * (self.old_u + self.u), 0.5 * (self.old_f + self.f), current)
-        k3_pos, k3_vel = self.step(self.p + self.period * 0.5 * k2_pos, self.v + self.period * 0.5 * k2_vel, 0.5 * (self.old_u + self.u), 0.5 * (self.old_f + self.f), current)
-        k4_pos, k4_vel = self.step(self.p + self.period * k3_pos, self.v + self.period * k3_vel, self.u, self.f, current)
+        k1_pos, k1_vel = self.step(self.p, self.v, self.old_u, current)
+        k2_pos, k2_vel = self.step(self.p + self.period * 0.5 * k1_pos, self.v + self.period * 0.5 * k1_vel, 0.5 * (self.old_u + self.u), current)
+        k3_pos, k3_vel = self.step(self.p + self.period * 0.5 * k2_pos, self.v + self.period * 0.5 * k2_vel, 0.5 * (self.old_u + self.u), current)
+        k4_pos, k4_vel = self.step(self.p + self.period * k3_pos, self.v + self.period * k3_vel, self.u, current)
 
         self.p = self.p + self.period / 6.0 * ( k1_pos +
                                                 2.0 * k2_pos +
@@ -343,6 +346,21 @@ class Dynamics :
         odom.twist.twist.angular.y = self.v[4]
         odom.twist.twist.angular.z = self.v[5]
 
+
+        odom.pose.covariance[0] = self.covariance[0] 
+        odom.pose.covariance[7] = self.covariance[1] 
+        odom.pose.covariance[14] = self.covariance[2] 
+        odom.pose.covariance[21] = self.covariance[3] 
+        odom.pose.covariance[28] = self.covariance[4] 
+        odom.pose.covariance[35] = self.covariance[5] 
+
+        odom.twist.covariance[0] = self.covariance[6] 
+        odom.twist.covariance[7] = self.covariance[7] 
+        odom.twist.covariance[14] = self.covariance[8] 
+        odom.twist.covariance[21] = self.covariance[9] 
+        odom.twist.covariance[28] = self.covariance[10] 
+        odom.twist.covariance[35] = self.covariance[11] 
+
         self.pub_odom.publish(odom)
 
     def get_config(self):
@@ -371,8 +389,9 @@ class Dynamics :
                       'p_0': "dynamics/" + self.vehicle_name + "/initial_pose",
                       'v_0': "dynamics/" + self.vehicle_name + "/initial_velocity",
                       'odom_topic_name': "dynamics/" + self.vehicle_name + "/odom_topic_name",
+                      'covariance': "dynamics/"+ self.vehicle_name + "/covariance",
                       'frame_id': "frames/base_link",
-                      'world_frame_id': "frames/map",
+                      'world_frame_id': "frames/odom",
                       'current_mean': "dynamics/current_mean",
                       'current_sigma': "dynamics/current_sigma",
                       'current_min': "dynamics/current_min",

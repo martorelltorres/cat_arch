@@ -1,0 +1,45 @@
+
+vehicle_name: "xiroi"
+
+dynamics/xiroi/number_of_thrusters: 2
+# dynamics/xiroi/thrusters_topic: "/control/thrusters_data"
+dynamics/xiroi/thrusters_topic: "/control/thrusters_data"
+
+dynamics/xiroi/period: 0.05
+dynamics/xiroi/mass: 34.5
+dynamics/xiroi/gravity_center: [0.0, 0.0, 0.01]
+dynamics/xiroi/g: 9.81
+dynamics/xiroi/radius: 0.2009312118
+dynamics/xiroi/surface_radius: 0.15
+
+# Forward and backward thrusters coef 0.000020833333
+dynamics/xiroi/ctf: 0.000020833333
+dynamics/xiroi/ctb: 0.000020833333
+
+dynamics/xiroi/max_thrusters_rpm: 1200
+dynamics/xiroi/dzv: 0.05
+dynamics/xiroi/dv: 0.05
+dynamics/xiroi/dh: 0.40
+dynamics/xiroi/density: 1030.0
+ 
+dynamics/xiroi/thrusters_matrix: [[1.0, 1.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[-0.16, 0.16]]
+
+# [0.1337, 0.0, 0.0, 0.0, 1.6643, 0.0, 0.0, 0.0, 1.6643]
+dynamics/xiroi/tensor: [0.7, 0.0, 0.0, 0.0, 8.0, 0.0, 0.0, 0.0, 8.0]
+dynamics/xiroi/damping: [-20.0, -60.0, -60.0, -1.0, -8.0, -8.0]
+dynamics/xiroi/quadratic_damping: [-30.0, -60.0, -60.0, 0.0, -10.0, -10.0]
+
+# Meters and Rads [X, Y, Z, Roll, Pitch, Yaw]
+dynamics/xiroi/initial_pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+dynamics/xiroi/initial_velocity: [0, 0, 0, 0, 0, 0]
+
+dynamics/xiroi/odom_topic_name: "/xiroi/odom_dynamics"
+
+dynamics/xiroi/covariance: [0.3,0.3,0.3,0.1,0.1,0.1,0.05,0.05,0.05,0.01,0.01,0.01]
+
+
+# Water currents simulation
+dynamics/current_mean: [0.0, 0.0, 0.0]
+dynamics/current_sigma: [0.01, 0.01, 0.01]
+dynamics/current_min: [-0.0, -0.0, -0.0]
+dynamics/current_max: [0.0, 0.0, 0.0]

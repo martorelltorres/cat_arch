@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(cat_arch)
+project(xiroi)
 
 
 ## Find catkin and any catkin packages
@@ -16,6 +16,7 @@ find_package(catkin REQUIRED
 add_message_files(
   FILES
   Setpoints.msg
+  
 )
 
 generate_messages(
@@ -32,3 +33,8 @@ catkin_package(
   std_msgs
   std_srvs
   message_runtime)
+
+include_directories(${catkin_INCLUDE_DIRS})
+
+add_executable(nav_sat_pub src/sensors/nav_sat_pub.cpp)
+target_link_libraries(nav_sat_pub ${catkin_LIBRARIES})

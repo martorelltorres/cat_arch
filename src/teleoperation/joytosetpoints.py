@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import rospy
 import roslib
-roslib.load_manifest('control')
-from cat_arch.msg import Setpoints
+roslib.load_manifest('xiroi')
+from xiroi.msg import Setpoints
 from sensor_msgs.msg import Joy
 from math import *
-import numpy as np
+import numpy as np 
 
 class Controller:
     def __init__(self):
@@ -22,6 +22,7 @@ class Controller:
         rospy.Timer(rospy.Duration(0.1), self.timer_callback)
         # Message
         self.msg = Setpoints()
+        self.msg.header.frame_id = 'xiroi'
         self.msg.setpoints = np.array([0.0, 0.0])
        
 
@@ -38,7 +39,9 @@ class Controller:
 
     def timer_callback(self, event):
         """ Callback of the timer """
+        self.msg.header.stamp = rospy.Time.now()
         self.pub_thrusters_setpoints.publish(self.msg)
+        self.msg.header.seq = self.msg.header.seq + 1
 
 
 if __name__ == '__main__':
