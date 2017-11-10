@@ -1,7 +1,6 @@
 <launch>
 
-	<!-- <arg name="joystickDevice"  default="/dev/input/js0"/> -->
-	<arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>
+	<arg name="joystickDevice"  default="/dev/input/js0"/>
 
 	<node respawn="true" pkg="joy" type="joy_node" name="joystick">
         <param name="dev" value="$(arg joystickDevice)"/>
@@ -11,4 +10,5 @@
     <node respawn="true" pkg="xiroi" type="joytosetpoints.py" name="joytosetpoints" />
     <node respawn="true" pkg="xiroi" type="arduino_node.py" output="screen" name="arduino_node"/>
     	
-  </launch> 
+ 
+ </launch> 
