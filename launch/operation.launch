@@ -1,0 +1,59 @@
+<launch>
+   
+  <!-- VEHICLE FRAMES -->
+  <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
+
+  
+  <!-- NED Origin -->
+  <arg name="place" default="emissari.yaml"/>
+  <arg name="placesDir" default="$(find xiroi)/config/places"/>
+  <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>  
+
+  <!-- JOYSTICK -->
+  <!-- <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="utm2map" args="0 0 0 0 0 0 1 utm map 100"/>
+
+  <node respawn="true" pkg="joy" type="joy_node" name="joystick">
+        <param name="dev" value="$(arg joystickDevice)"/>
+        <param name="deadzone" value="0.05"/>
+    </node>
+    <node respawn="true" pkg="xiroi" type="logitech_joy.py" name="logitech_joy" />
+    <node respawn="true" pkg="xiroi" type="joytosetpoints.py" name="joytosetpoints">
+	    <remap from="/setpoints" to="/control/thrusters_data"/>
+	</node> -->
+ 
+
+  <!-- DYNAMICS -->
+  <rosparam command="load" file="$(find xiroi)/config/robot_dynamics.yaml"/>
+  <node name="robot_dynamics" pkg="xiroi" type="robot_dynamics.py" respawn="false" output="screen"/>
+
+   <!-- OPERATION NODE -->
+  <node name="operator" pkg="xiroi" type="operator.py" respawn="false" output="screen"/>
+
+  <!-- SIM SENSORS -->
+  <rosparam command="load" file="$(find xiroi)/config/sim_sensors.yaml"/>
+  <node name="sim_sensors" pkg="xiroi" type="sim_sensors.py" respawn="false" output="screen"/>
+
+  <!-- ROBOT LOCALIZATION -->
+  <rosparam command="load" file="$(find xiroi)/config/robot_localization_operation.yaml" />
+  <!-- continuous data sensors odom->xiroi -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_odom"/>
+  </node>
+  <!-- continuous data sensors + GPS  map->odom -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+  <!-- navsat_transform_node -->
+   <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" respawn="true">
+    <param name="magnetic_declination_radians" value="0"/>
+    <param name="yaw_offset" value="0"/>
+    <remap from="/imu/data" to="/sensors/imu" />
+    <remap from="/gps/fix" to="/sensors/gps" />
+    <remap from="/odometry/filtered" to="/odometry/filtered_odom" />
+    <remap from="/odometry/gps" to="/sensors/gps_odom"/>
+   </node>
+   
+  
+</launch>
