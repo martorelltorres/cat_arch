@@ -19,9 +19,7 @@ class Follower:
         # Initialize some parameters
         self.nav_sts = NavSts()
         self.xiroi_position = PoseStamped()
-        # self.ned_latitude = rospy.get_param("/navigator/ned_origin_lat")
-        # self.ned_longitude = rospy.get_param("/navigator/ned_origin_lon")
-        
+         
         self.turbot_pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.security_radius=10 #meters
         self.scale_factor=130
@@ -71,10 +69,6 @@ class Follower:
         msg.pose.position.y = nav_sts.position.east - 376
         msg.pose.position.z = nav_sts.position.depth
         msg.pose.orientation = Quaternion(*tf.transformations.quaternion_from_euler(nav_sts.orientation.roll, nav_sts.orientation.pitch, nav_sts.orientation.yaw))
-        # msg.pose.covariance = np.zeros([36], dtype=np.float32)
-        # msg.pose.covariance[0] = 1.0
-        # msg.pose.covariance[7] = 1.0
-        # msg.pose.covariance[14] = 1.0
         self.turbot_pose_pub.publish(msg)
         
         self.check_security_radius()
