@@ -35,7 +35,7 @@ class ArduinoROS():
         # Cleanup when termniating the node
         rospy.on_shutdown(self.shutdown)
 
-        self.port = rospy.get_param("~port", "/dev/ttyUSB0")
+        self.port = rospy.get_param("~port", "/dev/ttyUSB1")
         self.baud = int(rospy.get_param("~baud",57600))
         self.timeout = rospy.get_param("~timeout",0.5)
         self.base_frame = rospy.get_param("~base_frame", 'base_link')
@@ -44,9 +44,9 @@ class ArduinoROS():
         self.first_time=True;
 
         #Slew rate parameters
-        self.rising_rate = 0.1
+        self.rising_rate = 0.3
         self.falling_rate = 1
-        self.setpoint_limit = 0.8
+        self.setpoint_limit = 1
       
         # Overall loop rate: should be faster than fastest sensor rate
         self.rate = int(rospy.get_param("~rate", 50))

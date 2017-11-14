@@ -114,21 +114,21 @@ class Follower:
 
             if not self.gps_init:
                 self.gps_init = True
-        
+         
 
     def check_security_radius(self):
         if self.gps_init and self.imu_init:
             self.x_distance = self.turbot_pose.north -self.xiroi_position_x
             self.y_distance = self.turbot_pose.east -self.xiroi_position_y
             self.radius = sqrt((self.x_distance**2)+(self.y_distance**2)) 
-            # print "radius "+ str(self.radius)
-            # print "securiry_radius "+ str(self.security_radius)
-            # print "depht threshold "+str(self.depth_threshold)
-            # print "repulsion_radius "+ str(self.repulsion_radius)
-            # print "turbot_depht "+ str(self.turbot_pose.depth)
-            # print "x_distance "+str(self.x_distance)
-            # print "y_distance "+str(self.y_distance)
-            # print " "
+            print "radius "+ str(self.radius)
+            print "securiry_radius "+ str(self.security_radius)
+            print "depht threshold "+str(self.depth_threshold)
+            print "repulsion_radius "+ str(self.repulsion_radius)
+            print "turbot_depht "+ str(self.turbot_pose.depth)
+            print "x_distance "+str(self.x_distance)
+            print "y_distance "+str(self.y_distance)
+            print " "
 
             if(self.radius <= self.security_radius and self.radius>self.repulsion_radius):
                 self.stopped()
