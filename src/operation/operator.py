@@ -114,7 +114,7 @@ class Follower:
 
             if not self.gps_init:
                 self.gps_init = True
-         
+        
 
     def check_security_radius(self):
         if self.gps_init and self.imu_init:
@@ -131,10 +131,13 @@ class Follower:
             print " "
 
             if(self.radius <= self.security_radius and self.radius>self.repulsion_radius):
+                # print "stop"
                 self.stopped()
             elif(self.radius <= self.repulsion_radius and self.turbot_pose.depth<self.depth_threshold):
+                # print "repulsion"
                 self.repulsion()
             else:
+                # print "follow"
                 self.follow()
         else:
             rospy.logwarn("Waiting for GPS and IMU to be received...")

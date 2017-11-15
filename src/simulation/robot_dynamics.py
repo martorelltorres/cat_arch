@@ -317,7 +317,7 @@ class Dynamics :
 
         # Publish odometry
         self.pub_odometry()
-
+ 
 
     def pub_odometry(self):
         """ Publish odometry message """

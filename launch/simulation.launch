@@ -1,56 +1,61 @@
 <launch>
-
-  <!-- SIMULATION BAGFILES -->
-<!--   <arg name="bagfile" default="/home/catamaran/xiroi_ws/bagfiles/auv170728_1237_2017-07-28-10-37-43_0.bag /home/catamaran/xiroi_ws/bagfiles/gs170728_1237_2017-07-28-12-37-42_0.bag" /> -->
-
-  <!-- SIMULATION TIME -->
-  <!-- <param name="use_sim_time" value="true"/>
-  <node name="rosbag" pkg="rosbag" type="play" args="--clock $(arg bagfile)"/> -->
-
-  <!-- OPERATION NODE -->
-   <node respawn="true" pkg="xiroi" type="follower.py" output="screen" name="follower" />
    
-   <!-- IMU NODE -->
-  <include file="$(find xiroi)/launch/imu.launch"/>
-
-    <!-- NED Origin -->
-  <arg name="place" default="emissari.yaml"/>
-  <arg name="placesDir" default="$(find xiroi)/config/places"/>
-  <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>  
-  
-
-  <!-- SIMULATION NODES -->
-  <!-- GPS driver simulated or emlid -->
-<!--   <arg name="simulateGps"  default="true"/>
-  <group unless="$(arg simulateGps)">
-    <rosparam command="load" file="$(find emlid_reach_tcp)/config/emlid_gps.yaml" />
-    <node name="emlid_driver" pkg="emlid_reach_tcp" type="emlid_driver.py" output="screen">
-      <remap from="/emlid_gps" to="/sensors/gps_buoy_emlid_raw" />
-      <remap from="/diagnostics" to="/sensors/gps_buoy_emlid_diagnostics" />
-    </node>
-  </group> -->
-
-  <!-- JOYSTICK -->
-  <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>
-
-  <node respawn="true" pkg="joy" type="joy_node" name="joystick">
-        <param name="dev" value="$(arg joystickDevice)"/>
-        <param name="deadzone" value="0.05"/>
-    </node>
-    <node respawn="true" pkg="xiroi" type="logitech_joy.py" name="logitech_joy" />
-    <node respawn="true" pkg="xiroi" type="joytosetpoints.py" name="joytosetpoints" />
-
-  <!-- DYNAMICS -->
-  <rosparam command="load" file="$(find xiroi)/config/robot_dynamics.yaml"/>
-  <node name="robot_dynamics" pkg="xiroi" type="robot_dynamics.py" respawn="false"/>
-
-  <!-- SIM SENSORS -->
-  <rosparam command="load" file="$(find xiroi)/config/sim_sensors.yaml"/>
-  <node name="sim_sensors" pkg="xiroi" type="sim_sensors.py" respawn="false" output="screen"/>
-  
   <!-- VEHICLE FRAMES -->
   <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
 
+  <!-- BAGFILES -->
+  <!-- Params -->
+  <arg name="rate"       default= "2" />
+  <!-- Mission -->
+  <arg name="path"       default= "/home/catamaran/xiroi_ws/bagfiles" />
+  <arg name="file"       default= "/auv170728_1237_2017-07-28-10-37-43_0.bag" />
+  <arg name="bags"       default= "$(arg path)$(arg file)" />
+   <!-- Topics -->
+  <arg name="topics"   default="/navigation/nav_sts " />
+  <!-- Bagfile play -->
+  <param name="use_sim_time" value="true"/>
+  <node name="rosbag" pkg="rosbag" type="play" args="--clock $(arg bags) -r $(arg rate) --topics $(arg topics)"/>
 
 
+  <!-- NED Origin -->
+  <arg name="place" default="emissari.yaml"/>
+  <arg name="placesDir" default="$(find xiroi)/config/places"/>
+  <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>  
+  <node pkg="tf" type="static_transform_publisher" name="utm2map" args="0 0 0 0 0 0 1 utm map 100"/>
+
+  <!--DYNAMICS -->
+  <rosparam command="load" file="$(find xiroi)/config/robot_dynamics.yaml"/>
+  <node name="robot_dynamics" pkg="xiroi" type="robot_dynamics.py" respawn="false" output="screen">
+     <remap from="/control/thrusters_data" to="/setpoints"/>
+  </node>
+
+  <!--SIM SENSORS-->
+  <rosparam command="load" file="$(find xiroi)/config/sim_sensors.yaml"/>
+  <node name="sim_sensors" pkg="xiroi" type="sim_sensors.py" respawn="false" output="screen"/>
+
+   <!--OPERATION NODE-->
+  <node name="operator" pkg="xiroi" type="operator.py" respawn="false" output="screen"/>
+
+  <!--ROBOT LOCALIZATION-->
+  <rosparam command="load" file="$(find xiroi)/config/robot_localization_operation.yaml" />
+  <!--continuous data sensors odom->xiroi-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_odom"/>
+  </node>
+  <!--continuous data sensors + GPS  map->odom-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+  <!--navsat_transform_node-->
+ <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" respawn="true"> 
+    <param name="magnetic_declination_radians" value="0"/>
+    <param name="yaw_offset" value="0"/>
+    <remap from="/imu/data" to="/sensors/imu" /><!--subscriber-->
+    <remap from="/gps/fix" to="/sensors/gps" /><!--subscriber-->
+    <remap from="/odometry/filtered" to="/odometry/filtered_odom" /> <!--subscriber-->
+    <remap from="/odometry/gps" to="/sensors/gps_odom"/><!--publisher-->
+   </node>
+ 
+   
+   
 </launch>

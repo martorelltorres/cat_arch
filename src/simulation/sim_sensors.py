@@ -199,7 +199,7 @@ class SimNavSensors:
         gps.position_covariance[0] = self.gps_position_covariance[0]
         gps.position_covariance[4] = self.gps_position_covariance[1]
         gps.position_covariance[8] = self.gps_position_covariance[2]
-
+ 
         # Extract NED referenced pose
         north = (self.odom.pose.pose.position.y + np.random.normal(self.gps_drift[0], self.gps_position_covariance_gen[0]))
         east = (self.odom.pose.pose.position.x + np.random.normal(self.gps_drift[1], self.gps_position_covariance_gen[1]))
