@@ -76,8 +76,8 @@ class SimNavSensors:
         # self.dvl_velocities = []
 
         # Create publishers
-        self.pub_imu = rospy.Publisher('/sensors/imu', Imu, queue_size = 2)
-        self.pub_gps = rospy.Publisher('/sensors/gps',NavSatFix,queue_size = 2)
+        self.pub_imu = rospy.Publisher('sensors/imu', Imu, queue_size = 2)
+        self.pub_gps = rospy.Publisher('sensors/gps',NavSatFix,queue_size = 2)
 
         # Create subscribers to odometry and range
         rospy.Subscriber(self.odom_topic_name, Odometry, self.update_odometry, queue_size = 1)

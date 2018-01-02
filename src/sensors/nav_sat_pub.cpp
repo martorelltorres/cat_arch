@@ -35,15 +35,15 @@ int main(int argc, char **argv)
   {
     if (!ned_catched && use_ned_origin)
     {
-      if (n.hasParam("/navigator/ned_origin_lat") && n.hasParam("/navigator/ned_origin_lon"))
+      if (n.hasParam("navigator/ned_origin_lat") && n.hasParam("navigator/ned_origin_lon"))
       {
-        n.getParam("/navigator/ned_origin_lat", lat);
-        n.getParam("/navigator/ned_origin_lon", lon);
+        n.getParam("navigator/ned_origin_lat", lat);
+        n.getParam("navigator/ned_origin_lon", lon);
         ned_catched = true;
       }
       else
       {
-        ROS_WARN_THROTTLE(5, "[nav_sat_pub]: Unable to find /navigator/ned_origin");
+        ROS_WARN_THROTTLE(5, "[nav_sat_pub]: Unable to find navigator/ned_origin");
         continue;
       }
     }

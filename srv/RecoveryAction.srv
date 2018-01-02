@@ -1,0 +1,8 @@
+# ERROR LEVEL
+uint16 INFORMATIVE = 0
+uint16 ABORT_MISSION = 1
+uint16 DISABLE_THRUSTERS = 2
+
+uint8 error_level
+---
+bool attempted

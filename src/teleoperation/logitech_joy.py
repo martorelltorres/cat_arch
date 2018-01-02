@@ -22,6 +22,42 @@ class LogitechFX10(JoystickBase):
         """Class Constructor."""
         JoystickBase.__init__(self, name)
 
+        # ... enable keep position
+        rospy.wait_for_service(
+            'control/enable_keep_position', 10)
+        try:
+            self.enable_keep_position = rospy.ServiceProxy(
+                'control/enable_keep_position', Empty)
+        except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+
+         # ... disable keep position
+        rospy.wait_for_service(
+            'control/disable_keep_position', 10)
+        try:
+            self.disable_keep_position = rospy.ServiceProxy(
+                'control/disable_keep_position', Empty)
+        except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+
+        # ... enable teleoperation
+        rospy.wait_for_service(
+            'control/enable_teleoperation', 10)
+        try:
+            self.enable_teleoperation = rospy.ServiceProxy(
+                'control/enable_teleoperation', Empty)
+        except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+        # ... disable teleoperation
+        rospy.wait_for_service(
+            'control/disable_teleoperation', 10)
+        try:
+            self.disable_teleoperation = rospy.ServiceProxy(
+                'control/disable_teleoperation', Empty)
+        except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+
+
     def update_joy(self, joy):
         """Receive joy raw data."""
         """ Transform FX10 joy data into 12 axis data (pose + twist)
@@ -59,6 +95,20 @@ class LogitechFX10(JoystickBase):
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_V] = -joy.axes[RIGHT_JOY_HORIZONTAL]
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_W] = joy.axes[RIGHT_JOY_VERTICAL]
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_R] = -joy.axes[LEFT_JOY_HORIZONTAL]
+        
+        # Enable/disable keep position
+        if joy.buttons[BUTTON_START] == 1.0: 
+            self.enable_keep_position()
+
+        if joy.buttons[BUTTON_BACK] == 1.0: 
+            self.disable_keep_position()
+
+        #Enable/disable teleoperation
+        if joy.buttons[BUTTON_A] == 1.0: 
+            self.enable_teleoperation()
+
+        if joy.buttons[BUTTON_Y] == 1.0: 
+            self.disable_teleoperation()
 
 if __name__ == '__main__':
     """ Initialize the logitech_fx10 node. """

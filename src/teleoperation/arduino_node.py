@@ -23,7 +23,8 @@ from ros_arduino_python.arduino_driver import Arduino
 import os, time
 import thread
 from serial.serialutil import SerialException
-from xiroi.msg import Setpoints
+from xiroi.msg import Setpoints, Current
+from xiroi.srv import RecoveryAction, RecoveryActionRequest, RecoveryActionResponse
 
 class ArduinoROS():
     def __init__(self):
@@ -34,36 +35,59 @@ class ArduinoROS():
 
         # Cleanup when termniating the node
         rospy.on_shutdown(self.shutdown)
-
-        self.port = rospy.get_param("~port", "/dev/ttyUSB1")
+        self.port = rospy.get_param("~port", "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008iB3-if00-port0")
         self.baud = int(rospy.get_param("~baud",57600))
         self.timeout = rospy.get_param("~timeout",0.5)
         self.base_frame = rospy.get_param("~base_frame", 'base_link')
         self.left_thruster_pin = rospy.get_param("~left_thruster_pin", 0)
         self.right_thruster_pin = rospy.get_param("~right_thruster_pin", 1)
+        self.current_sensor_pin = rospy.get_param("~current_sensor_pin", 0)
+        self.current_sensor_power_pin = rospy.get_param("~current_sensor_power_pin", 3)
         self.first_time=True;
 
         #Slew rate parameters
-        self.rising_rate = 0.3
-        self.falling_rate = 1
-        self.setpoint_limit = 1
+        self.rising_rate = 0.3 #0.3
+        self.falling_rate = 1.0 #1
+        self.setpoint_limit = 0.6 #1
       
         # Overall loop rate: should be faster than fastest sensor rate
         self.rate = int(rospy.get_param("~rate", 50))
         r = rospy.Rate(self.rate)
 
         # Callback for thrusters
-        rospy.Subscriber("/setpoints", Setpoints, self.callback)
-        self.setpoints_corrected = rospy.Publisher("/setpoints_corrected", Setpoints, queue_size=1)
+        rospy.Subscriber("setpoints", Setpoints, self.callback)
+        self.setpoints_corrected = rospy.Publisher("setpoints_corrected", Setpoints, queue_size=1)
+        self.thruster_current = rospy.Publisher("thruster_current",Current, queue_size=1)
+        
+        #Services
+        self.thrusters_enabled = True
+        self.recovery_srv = rospy.Service('control/disable_thrusters',
+                                RecoveryAction,
+                                self.disable_thrusters)
         # Initialize the controlller
         self.controller = Arduino(self.port, self.baud, self.timeout)
         # Make the connection
         self.controller.connect()
         rospy.loginfo("Connected to Arduino on port " + self.port + " at " + str(self.baud) + " baud")
      
+        self.controller.pin_mode(self.current_sensor_power_pin, 1)
+        self.controller.digital_write(self.current_sensor_power_pin,1)
+    
         while not rospy.is_shutdown():
+            current = self.controller.analog_read(self.current_sensor_pin)
+            # publish
+            msg = Current()
+            msg.header.stamp = rospy.Time.now()
+            msg.current = ((current/1024.0*5.0) - 2.41)/0.066
+            self.thruster_current.publish(msg)
             r.sleep()
     
+    def disable_thrusters(self,req):
+        self.controller.servo_write(self.left_thruster_pin,1500)
+        self.controller.servo_write(self.right_thruster_pin,1500)
+        self.thrusters_enabled = False
+
+
     def limitSetpoint(self, msg, time, old_msg, old_time):
         #Rate calculation
         rate = (msg - old_msg)/(time - old_time)
@@ -88,13 +112,21 @@ class ArduinoROS():
     #     #1900 => max thrust positive
     #     #1500 => 0A
     #     #1100 => max thrust negative
+        actual_time=rospy.Time.now()
+        message_time=msg.header.stamp
+        delay_threshold=rospy.Duration(0,650000)
+        time_dif=actual_time-message_time
+
+        # if time_dif<delay_threshold:
+            
         msg0=msg.setpoints[0];
         msg1=msg.setpoints[1];
-        time=msg.header.stamp.to_sec()
+        # time=msg.header.stamp.to_sec()
+        time=rospy.Time.now().to_sec()
 
         if(self.first_time):
-            self.controller.servo_write(self.left_thruster_pin,msg0)
-            self.controller.servo_write(self.right_thruster_pin,msg1)
+            self.controller.servo_write(self.left_thruster_pin,1500+msg0*400)
+            self.controller.servo_write(self.right_thruster_pin,1500+msg1*400)
             self.old_time = time
             self.old_msg0 = msg0
             self.old_msg1 = msg1
@@ -114,9 +146,10 @@ class ArduinoROS():
         elif msg1 < -self.setpoint_limit:
             msg1 = -self.setpoint_limit
                 
-
-        self.controller.servo_write(self.left_thruster_pin,1500+msg0*400)
-        self.controller.servo_write(self.right_thruster_pin,1500+msg1*400)
+        if self.thrusters_enabled:
+            print str(1500+msg0*400) + ' ' + str(1500+msg1*400)
+            self.controller.servo_write(self.left_thruster_pin,1500+msg0*400)
+            self.controller.servo_write(self.right_thruster_pin,1500+msg1*400)
      
         self.old_time = time
         self.old_msg0 = msg0
@@ -124,7 +157,7 @@ class ArduinoROS():
 
         msg.setpoints = [msg0, msg1]
         self.setpoints_corrected.publish(msg)
- 
+
     def shutdown(self):
         rospy.loginfo("Shutting down Arduino Node...")
 

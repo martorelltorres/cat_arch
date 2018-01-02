@@ -2,7 +2,6 @@
 vehicle_name: "xiroi"
 
 dynamics/xiroi/number_of_thrusters: 2
-# dynamics/xiroi/thrusters_topic: "/control/thrusters_data"
 dynamics/xiroi/thrusters_topic: "/control/thrusters_data"
 
 dynamics/xiroi/period: 0.05

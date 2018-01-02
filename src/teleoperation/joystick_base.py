@@ -56,22 +56,22 @@ class JoystickBase(object):
 
         # Create publisher
         self.pub_map_ack_data = rospy.Publisher(
-            "/control/map_ack_data",
+            "control/ack_joy",
             Joy,
             queue_size = 1)
 
         self.pub_map_ack_ack_teleop = rospy.Publisher(
-            "/control/map_ack_ack",
+            "control/ack_ack",
             String,
             queue_size = 1)
 
         # Create subscriber
-        rospy.Subscriber("/control/map_ack_ok",
+        rospy.Subscriber("control/ack",
                          String,
                          self.update_ack,
                          queue_size = 4)
 
-        rospy.Subscriber("/joy",
+        rospy.Subscriber("joy",
                          Joy,
                          self.update_joy,
                          queue_size = 4)

@@ -7,6 +7,7 @@ from geometry_msgs.msg import Vector3Stamped, PoseStamped,PoseWithCovariance,Pos
 from ned_tools import NED
 from nav_msgs.msg import Odometry
 from visualization_msgs.msg import Marker
+from xiroi.srv import RecoveryAction
 from auv_msgs.msg import NavSts
 from math import *
 import tf
@@ -32,19 +33,23 @@ class Follower:
         # Subscribers
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.NavSts_callback)           #Turbot surface position 
         rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.NavSts_callback)  #Turbot underwater position  
-        rospy.Subscriber("/odometry/filtered_map",Odometry,self.xiroi_pose)             #Xiroi position and orientation
-    
+        rospy.Subscriber("odometry/filtered_map",Odometry,self.xiroi_pose)             #Xiroi position and orientation
+     
         # Publishers
-        self.pub_thrusters_setpoints = rospy.Publisher('/setpoints',                        #Thruster velocity message
-                                             Setpoints,
-                                             queue_size = 2)
-        self.turbot_pose_pub = rospy.Publisher("/turbot/pose", PoseStamped, queue_size = 1)
-        self.markerPub = rospy.Publisher('robotMarker', Marker, queue_size=1)
+        self.pub_thrusters_setpoints = rospy.Publisher('setpoints',Setpoints,queue_size = 2)
+        self.turbot_pose_pub = rospy.Publisher("turbot/pose",PoseStamped,queue_size = 1)
+        self.markerPub = rospy.Publisher('robotMarker',Marker,queue_size=1)
+        #Services
+        self.recovery_srv = rospy.Service('control/abort_mission',RecoveryAction,self.abort_mission)
         # Message
         self.msg = Setpoints()
         self.msg.header.frame_id = 'xiroi'
         self.msg.setpoints = np.array([0.0, 0.0])
-        
+
+    def abort_mission (self,req):
+        self.abort_mission = True
+        #TODO:act consequently
+
     def NavSts_callback(self,nav_sts):
 
         """ This is the callback for the navigation message """
@@ -121,26 +126,16 @@ class Follower:
             self.x_distance = self.turbot_pose.north -self.xiroi_position_x
             self.y_distance = self.turbot_pose.east -self.xiroi_position_y
             self.radius = sqrt((self.x_distance**2)+(self.y_distance**2)) 
-            print "radius "+ str(self.radius)
-            print "securiry_radius "+ str(self.security_radius)
-            print "depht threshold "+str(self.depth_threshold)
-            print "repulsion_radius "+ str(self.repulsion_radius)
-            print "turbot_depht "+ str(self.turbot_pose.depth)
-            print "x_distance "+str(self.x_distance)
-            print "y_distance "+str(self.y_distance)
-            print " "
-
+  
             if(self.radius <= self.security_radius and self.radius>self.repulsion_radius):
-                # print "stop"
                 self.stopped()
             elif(self.radius <= self.repulsion_radius and self.turbot_pose.depth<self.depth_threshold):
-                # print "repulsion"
                 self.repulsion()
             else:
-                # print "follow"
                 self.follow()
         else:
-            rospy.logwarn("Waiting for GPS and IMU to be received...")
+            rospy.logwarn_throttle(90, "Waiting for GPS and IMU to be received...")
+
 
     def stopped(self):
         aux = np.array([0.0, 0.0])
@@ -179,6 +174,7 @@ class Follower:
             self.msg.header.seq = self.msg.header.seq + 1
         else:
             rospy.logwarn("Waiting for GPS and IMU to be received...")
+
             
     
 if __name__ == '__main__':

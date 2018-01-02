@@ -6,9 +6,11 @@ arduino_node/baud: 57600
 arduino_node/timeout: 0.5
 arduino_node/rate: 50
 arduino_node/base_frame: base_link
-#Thrusters pins
+#Arduino pins
 arduino_node/left_thruster_pin: 0
 arduino_node/right_thruster_pin: 1
+arduino_node/current_sensor_pin: 0
+arduino_node/current_sensor_power_pin: 3
 #Thrusters controller
 arduino_node/rising_rate: 0.1
 arduino_node/falling_rate: 1

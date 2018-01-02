@@ -16,8 +16,17 @@ find_package(catkin REQUIRED
 add_message_files(
   FILES
   Setpoints.msg
-  
+  TotalTime.msg
+  Current.msg 
 )
+
+add_service_files(
+  FILES
+  RecoveryAction.srv
+  MissionTimeout.srv
+)
+
+catkin_python_setup()
 
 generate_messages(
   DEPENDENCIES
