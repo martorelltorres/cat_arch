@@ -7,7 +7,7 @@ import roslib
 roslib.load_manifest('xiroi')
 import rospy
 import PyKDL
-from numpy import * 
+from numpy import *
 
 # import msgs
 from nav_msgs.msg import Odometry
@@ -76,12 +76,12 @@ class SimNavSensors:
         # self.dvl_velocities = []
 
         # Create publishers
-        self.pub_imu = rospy.Publisher('sensors/imu', Imu, queue_size = 2)
-        self.pub_gps = rospy.Publisher('sensors/gps',NavSatFix,queue_size = 2)
+        self.pub_imu = rospy.Publisher('sensors/imu_raw', Imu, queue_size = 2)
+        self.pub_gps = rospy.Publisher('sensors/gps_raw',NavSatFix,queue_size = 2)
 
         # Create subscribers to odometry and range
         rospy.Subscriber(self.odom_topic_name, Odometry, self.update_odometry, queue_size = 1)
-       
+
         # Init simulated sensor timers
         rospy.Timer(rospy.Duration(self.imu_period), self.pub_imu_callback)
         rospy.Timer(rospy.Duration(self.gps_period), self.pub_gps_callback)
@@ -112,7 +112,7 @@ class SimNavSensors:
                                      self.odom.pose.pose.orientation.w])
 
     def pub_imu_callback(self, event):
-        """ This method is a callback of a timer. This publishes imu data """  
+        """ This method is a callback of a timer. This publishes imu data """
         # TODO: euler rate is not angular velocity!
 
         # Imu
@@ -199,7 +199,7 @@ class SimNavSensors:
         gps.position_covariance[0] = self.gps_position_covariance[0]
         gps.position_covariance[4] = self.gps_position_covariance[1]
         gps.position_covariance[8] = self.gps_position_covariance[2]
- 
+
         # Extract NED referenced pose
         north = (self.odom.pose.pose.position.y + np.random.normal(self.gps_drift[0], self.gps_position_covariance_gen[0]))
         east = (self.odom.pose.pose.position.x + np.random.normal(self.gps_drift[1], self.gps_position_covariance_gen[1]))
@@ -236,9 +236,7 @@ class SimNavSensors:
                       'imu_orientation_covariance': "sim_sensors/imu/orientation_covariance",
                       'gps_position_covariance': "sim_sensors/gps/position_covariance",
                       'imu_orientation_covariance_gen': "sim_sensors/imu/orientation_covariance_gen",
-                      'gps_position_covariance_gen': "sim_sensors/gps/position_covariance_gen",
-                      'buoy_position_x': "sim_sensors/buoy_position_x",
-                      'buoy_position_y': "sim_sensors/buoy_position_y"}
+                      'gps_position_covariance_gen': "sim_sensors/gps/position_covariance_gen"}
 
         if not utils_ros.getRosParams(self, param_dict, self.name):
             rospy.logfatal("[%s]: shutdown due to invalid config parameters!", self.name)

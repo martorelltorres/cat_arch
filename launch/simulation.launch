@@ -1,9 +1,9 @@
 <launch>
 
     <arg name="namespace_arg" default="/xiroi" />
-  
+
     <group ns="$(arg namespace_arg)">
-   
+
       <!-- VEHICLE FRAMES -->
       <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
 
@@ -23,8 +23,7 @@
       <!-- NED Origin -->
       <arg name="place" default="emissari.yaml"/>
       <arg name="placesDir" default="$(find xiroi)/config/places"/>
-      <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>  
-      <node pkg="tf" type="static_transform_publisher" name="utm2map" args="0 0 0 0 0 0 1 utm map 100"/>
+      <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
 
       <!--TELEOPERATION-->
       <include file="$(find xiroi)/launch/teleoperation.launch"/>
@@ -43,6 +42,7 @@
 
        <!--OPERATION NODE-->
       <!-- <node name="operator" pkg="xiroi" type="operator.py" respawn="false" output="screen"/> -->
+      <node name="control" pkg="xiroi" type="control.py" respawn="false" output="screen"/>
       <node name="follower" pkg="xiroi" type="follower.py" respawn="false" output="screen"/>
       <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/>
       <!--ROBOT LOCALIZATION-->
@@ -56,16 +56,16 @@
         <remap from="odometry/filtered" to="odometry/filtered_map"/>
       </node>
       <!--navsat_transform_node-->
-      <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" respawn="true"> 
+<!--       <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" respawn="true">
         <param name="magnetic_declination_radians" value="0"/>
         <param name="yaw_offset" value="0"/>
-        <remap from="imu/data" to="sensors/imu" /><!--subscriber-->
-        <remap from="gps/fix" to="sensors/gps" /><!--subscriber-->
-        <remap from="odometry/filtered" to="odometry/filtered_odom" /> <!--subscriber-->
-        <remap from="odometry/gps" to="sensors/gps_odom"/><!--publisher-->
+        <remap from="imu/data" to="sensors/imu" />
+        <remap from="gps/fix" to="sensors/gps" />
+        <remap from="odometry/filtered" to="odometry/filtered_odom" />
+        <remap from="odometry/gps" to="sensors/gps_odom"/>
       </node>
-
+ -->
     </group>
 
-    <!-- <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/> -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 </launch>

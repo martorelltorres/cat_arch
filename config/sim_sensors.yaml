@@ -2,20 +2,16 @@
 
 # Sensors publication periods
 sim_sensors/imu/period: 0.1
-sim_sensors/gps/period: 1.0
+sim_sensors/gps/period: 0.2
 
 # Sensors noise (standard deviation) - For generation
 sim_sensors/imu/orientation_covariance_gen: [0.0001, 0.0001, 0.0001]    # [0.0001, 0.0001, 0.0001]
-sim_sensors/gps/position_covariance_gen: [0.04, 0.04, 0.04]     # [0.04, 0.04, 0.04]
+sim_sensors/gps/position_covariance_gen: [0.001, 0.001, 0.001]     # [0.04, 0.04, 0.04]
 
 # Sensors drift (mean noise)
 sim_sensors/imu/drift: [0.005, 0.005, 0.06]
-sim_sensors/gps/drift: [0.0, 0.0, 0.0] 
+sim_sensors/gps/drift: [0.0, 0.0, 0.0]
 
 # Sensors belief (variances) - For messages
 sim_sensors/imu/orientation_covariance: [0.1, 0.1, 0.1]     #[0.1, 0.1, 0.1]
 sim_sensors/gps/position_covariance: [0.5, 0.5, 0.5]   #[0.5, 0.5, 0.5]
-
-# Gps buoy (distance from the NED origin in meters)
-sim_sensors/buoy_position_x: 0.0
-sim_sensors/buoy_position_y: 0.0
