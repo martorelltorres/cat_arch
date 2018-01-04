@@ -10,7 +10,9 @@ master_sync/sync_topics: [/navigation/nav_sts,
                           /xiroi/odometry/filtered_map,
                           /xiroi/odometry/filtered_odom,
                           /xiroi/sensors/gps,
-                          /xiroi/setpoints]
+                          /xiroi/setpoints,
+                          /xiroi/control/ack_ack,
+                          /xiroi/control/ack_joy]
 
 master_sync/sync_services: [/xiroi/control/abort_mission,
                             /xiroi/control/enable_keep_position,

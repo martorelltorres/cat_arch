@@ -1,4 +1,6 @@
 <launch>
+  <arg name="namespace_arg" default="/xiroi" />
+
 
   <!-- ROSBRIDGE -->
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
@@ -14,7 +16,9 @@
 
 
   <!--TELEOPERATION-->
-  <include file="$(find xiroi)/launch/modules/teleoperation.launch">
-    <arg name="isASC" value="false"/>
-  </include>
+  <group ns="$(arg namespace_arg)">
+    <include file="$(find xiroi)/launch/modules/teleoperation.launch">
+      <arg name="isASC" value="false"/>
+    </include>
+  </group>
 </launch>
