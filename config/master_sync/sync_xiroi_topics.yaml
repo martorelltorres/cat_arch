@@ -6,7 +6,11 @@ master_sync/ignore_nodes: [/rosout,
 
 master_sync/sync_topics: [/navigation/nav_sts,
                           /xiroi/navigation/nav_sts,
-                          /xiroi/joy]
+                          /xiroi/joy,
+                          /xiroi/odometry/filtered_map,
+                          /xiroi/odometry/filtered_odom,
+                          /xiroi/sensors/gps,
+                          /xiroi/setpoints]
 
 master_sync/sync_services: [/xiroi/control/abort_mission,
                             /xiroi/control/enable_keep_position,

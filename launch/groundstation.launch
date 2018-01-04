@@ -12,4 +12,9 @@
   <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_groundstation_topics.yaml"/>
   <node name="master_sync" pkg="master_sync_fkie" type="master_sync" output="screen"/>
 
+
+  <!--TELEOPERATION-->
+  <include file="$(find xiroi)/launch/modules/teleoperation.launch">
+    <arg name="isASC" value="false"/>
+  </include>
 </launch>

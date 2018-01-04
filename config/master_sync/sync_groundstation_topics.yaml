@@ -45,7 +45,11 @@ master_sync/sync_topics: [/control/thrusters_data,
                           /diagnostics,
                           #Xiroi
                           /xiroi/nav_sts,
-                          /xiroi/joy]
+                          /xiroi/joy,
+                          /xiroi/odometry/filtered_map,
+                          /xiroi/odometry/filtered_odom,
+                          /xiroi/sensors/gps,
+                          /xiroi/setpoints]
                           # /xiroi/safety]
 
 master_sync/sync_services: [/control/load_trajectory,
