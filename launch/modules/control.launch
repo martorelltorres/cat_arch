@@ -11,11 +11,13 @@
   <!--continuous data sensors odom->xiroi-->
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" clear_params="true">
     <remap from="odometry/filtered" to="odometry/filtered_odom"/>
+    <remap from="odometry/path" to="odometry/filtered_odom/path"/>
   </node>
 
   <!--continuous data sensors + GPS  map->odom-->
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
     <remap from="odometry/filtered" to="odometry/filtered_map"/>
+    <remap from="odometry/path" to="odometry/filtered_map/path"/>
   </node>
 
 </launch>

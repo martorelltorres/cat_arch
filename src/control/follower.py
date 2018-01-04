@@ -41,19 +41,19 @@ class WaypointFollowerNode:
         self.turbot_pose_pub = rospy.Publisher("turbot/pose",PoseStamped,queue_size = 1)
         self.markerPub = rospy.Publisher('robotMarker',Marker,queue_size=1)
         # Services
-        self.recovery_srv       =       rospy.Service('/xiroi/control/abort_mission',
+        self.recovery_srv       =       rospy.Service('control/abort_mission',
                                                         RecoveryAction,
                                                         self.follower.abort_mission)
-        self.enable_keep_position_srv = rospy.Service('/xiroi/control/enable_keep_position',
+        self.enable_keep_position_srv = rospy.Service('control/enable_keep_position',
                                                         Empty,
                                                         self.enable_keep_position)
-        self.disable_keep_position_srv = rospy.Service('/xiroi/control/disable_keep_position',
+        self.disable_keep_position_srv = rospy.Service('control/disable_keep_position',
                                                         Empty,
                                                         self.disable_keep_position)
-        self.enable_teleoperation_srv = rospy.Service('/xiroi/control/enable_teleoperation',
+        self.enable_teleoperation_srv = rospy.Service('control/enable_teleoperation',
                                                         Empty,
                                                         self.enable_teleoperation)
-        self.disable_teleoperation_srv = rospy.Service('/xiroi/control/disable_teleoperation',
+        self.disable_teleoperation_srv = rospy.Service('control/disable_teleoperation',
                                                         Empty,
                                                         self.disable_teleoperation)
 

@@ -100,7 +100,7 @@ ekf_map:
   odom0_differential: false
   odom0_relative: false
 
-  pose0: sensors/gps_odom
+  pose0: sensors/gps
   pose0_differential: false
   pose0_relative: false
   pose0_nodelay: true
