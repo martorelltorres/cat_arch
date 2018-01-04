@@ -33,6 +33,10 @@
     <!--SAFETY-->
     <!-- <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/> -->
 
+    <include file="$(find xiroi)/launch/modules/transforms.launch">
+      <arg name="suffix" value="asc"/>
+    </include>
+
     <!-- NED Origin -->
     <arg name="placesDir" default="$(find xiroi)/config/places"/>
     <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>

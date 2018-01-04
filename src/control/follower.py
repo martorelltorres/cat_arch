@@ -31,15 +31,6 @@ class WaypointFollowerNode:
         self.waypoint.header.frame_id = 'map'
         self.current.header.frame_id = 'map'
 
-        # Subscribers
-        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)           #Turbot surface position
-        rospy.Subscriber("/navigation/nav_sts", NavSts, self.waypoint_callback)           #Turbot surface position
-        rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.waypoint_callback)  #Turbot underwater position
-        rospy.Subscriber("odometry/filtered_map",Odometry,self.current_pose_callback)     #Current position and orientation
-        # Publishers
-        self.pub_thrusters_setpoints = rospy.Publisher('setpoints', Setpoints, queue_size = 2)
-        self.turbot_pose_pub = rospy.Publisher("turbot/pose",PoseStamped,queue_size = 1)
-        self.markerPub = rospy.Publisher('robotMarker',Marker,queue_size=1)
         # Services
         self.recovery_srv       =       rospy.Service('control/abort_mission',
                                                         RecoveryAction,
@@ -56,6 +47,16 @@ class WaypointFollowerNode:
         self.disable_teleoperation_srv = rospy.Service('control/disable_teleoperation',
                                                         Empty,
                                                         self.disable_teleoperation)
+        # Publishers
+        self.pub_thrusters_setpoints = rospy.Publisher('setpoints', Setpoints, queue_size = 2)
+        self.turbot_pose_pub = rospy.Publisher("turbot/pose",PoseStamped,queue_size = 1)
+        self.markerPub = rospy.Publisher('robotMarker',Marker,queue_size=1)
+
+        # Subscribers
+        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)           #Turbot surface position
+        rospy.Subscriber("/navigation/nav_sts", NavSts, self.waypoint_callback)           #Turbot surface position
+        rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.waypoint_callback)  #Turbot underwater position
+        rospy.Subscriber("odometry/filtered_map",Odometry,self.current_pose_callback)     #Current position and orientation
 
     def draw_marker(self):
         #Security radius marker

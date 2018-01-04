@@ -1,7 +1,6 @@
 <launch>
   <arg name="namespace_arg" default="/xiroi" />
 
-
   <!-- ROSBRIDGE -->
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
   <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server"/>
@@ -19,6 +18,10 @@
   <group ns="$(arg namespace_arg)">
     <include file="$(find xiroi)/launch/modules/teleoperation.launch">
       <arg name="isASC" value="false"/>
+    </include>
+
+    <include file="$(find xiroi)/launch/modules/transforms.launch">
+      <arg name="suffix" value="gs"/>
     </include>
   </group>
 </launch>
