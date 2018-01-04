@@ -8,7 +8,7 @@ from ned_tools import NED
 from nav_msgs.msg import Odometry
 from visualization_msgs.msg import Marker
 from xiroi.srv import RecoveryAction
-from std_srvs.srv import Empty, EmptyResponse
+from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
 from auv_msgs.msg import NavSts
 from math import *
 import tf
@@ -32,6 +32,7 @@ class WaypointFollowerNode:
         self.current.header.frame_id = 'map'
 
         # Subscribers
+        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)           #Turbot surface position
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.waypoint_callback)           #Turbot surface position
         rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.waypoint_callback)  #Turbot underwater position
         rospy.Subscriber("odometry/filtered_map",Odometry,self.current_pose_callback)     #Current position and orientation
@@ -87,6 +88,10 @@ class WaypointFollowerNode:
 
         self.turbot_pose_pub.publish(self.waypoint)
 
+    def setpoints_req(self, msg):
+        if self.teleoperation_enabled:
+            self.pub_thrusters_setpoints.publish(msg)
+
     def waypoint_callback(self, msg):
         if self.keep_position_enabled:
             return
@@ -117,6 +122,7 @@ class WaypointFollowerNode:
     def enable_keep_position(self, req):
         print "ENABLE KEEP POSITION"
         self.keep_position_enabled = True
+        self.teleoperation_enabled = False
 
         self.waypoint = copy.deepcopy(self.current)
         self.follower.security_radius = 2.5
@@ -127,6 +133,7 @@ class WaypointFollowerNode:
     def disable_keep_position(self, req):
         print "DISABLE KEEP POSITION"
         self.keep_position_enabled = False
+        self.teleoperation_enabled = True
 
         self.follower.security_radius = 10.0
         self.follower.repulsion_radius = 7.5
@@ -136,11 +143,13 @@ class WaypointFollowerNode:
     def disable_teleoperation(self, req):
         print "DISABLE TELEOPERATION"
         self.teleoperation_enabled = False
+        self.enable_keep_position(EmptyRequest())
         return EmptyResponse()
 
     def enable_teleoperation(self, req):
         print "ENABLE TELEOPERATION"
         self.teleoperation_enabled = True
+        self.disable_keep_position(EmptyRequest())
         return EmptyResponse()
 
 if __name__ == '__main__':
