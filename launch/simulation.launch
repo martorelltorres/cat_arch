@@ -1,71 +1,7 @@
 <launch>
+  <include file="$(find xiroi)/launch/robot.launch">
+    <arg name="simulation" value="true"/>
+  </include>
 
-    <arg name="namespace_arg" default="/xiroi" />
-
-    <group ns="$(arg namespace_arg)">
-
-      <!-- VEHICLE FRAMES -->
-      <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
-
-      <!-- BAGFILES -->
-      <!-- Params -->
-      <arg name="rate"       default= "1" />
-      <!-- Mission -->
-      <arg name="path"       default= "/home/catamaran/xiroi_ws/bagfiles" />
-      <arg name="file"       default= "/auv170728_1237_2017-07-28-10-37-43_0.bag" />
-      <arg name="bags"       default= "$(arg path)$(arg file)" />
-       <!-- Topics -->
-      <arg name="topics"   default="/navigation/nav_sts " />
-      <!-- Bagfile play -->
-      <param name="use_sim_time" value="true"/>
-      <node name="rosbag" pkg="rosbag" type="play" args="--clock $(arg bags) -r $(arg rate) --topics $(arg topics)"/>
-
-      <!-- NED Origin -->
-      <arg name="place" default="emissari.yaml"/>
-      <arg name="placesDir" default="$(find xiroi)/config/places"/>
-      <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
-
-      <!--TELEOPERATION-->
-      <include file="$(find xiroi)/launch/teleoperation.launch"/>
-      <!--SAFETY-->
-      <!-- <include file="$(find xiroi)/launch/safety.launch"/> -->
-
-      <!--DYNAMICS -->
-      <rosparam command="load" file="$(find xiroi)/config/robot_dynamics.yaml"/>
-      <node name="robot_dynamics" pkg="xiroi" type="robot_dynamics.py" respawn="false" output="screen">
-         <remap from="/control/thrusters_data" to="setpoints"/>
-      </node>
-
-      <!--SIM SENSORS-->
-      <rosparam command="load" file="$(find xiroi)/config/sim_sensors.yaml"/>
-      <node name="sim_sensors" pkg="xiroi" type="sim_sensors.py" respawn="false" output="screen"/>
-
-       <!--OPERATION NODE-->
-      <!-- <node name="operator" pkg="xiroi" type="operator.py" respawn="false" output="screen"/> -->
-      <node name="control" pkg="xiroi" type="control.py" respawn="false" output="screen"/>
-      <node name="follower" pkg="xiroi" type="follower.py" respawn="false" output="screen"/>
-      <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/>
-      <!--ROBOT LOCALIZATION-->
-      <rosparam command="load" file="$(find xiroi)/config/robot_localization_operation.yaml" />
-      <!--continuous data sensors odom->xiroi-->
-      <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" clear_params="true">
-        <remap from="odometry/filtered" to="odometry/filtered_odom"/>
-      </node>
-      <!--continuous data sensors + GPS  map->odom-->
-      <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
-        <remap from="odometry/filtered" to="odometry/filtered_map"/>
-      </node>
-      <!--navsat_transform_node-->
-<!--       <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" respawn="true">
-        <param name="magnetic_declination_radians" value="0"/>
-        <param name="yaw_offset" value="0"/>
-        <remap from="imu/data" to="sensors/imu" />
-        <remap from="gps/fix" to="sensors/gps" />
-        <remap from="odometry/filtered" to="odometry/filtered_odom" />
-        <remap from="odometry/gps" to="sensors/gps_odom"/>
-      </node>
- -->
-    </group>
-
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find xiroi)/rviz/xiroi.rviz"/>
 </launch>

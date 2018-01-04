@@ -1,0 +1,6 @@
+<launch>
+  <rosparam command="load" file="$(find xiroi)/config/robot_dynamics.yaml"/>
+  <node name="robot_dynamics" pkg="xiroi" type="robot_dynamics.py" respawn="false" output="screen">
+     <remap from="thrusters_setpoints" to="setpoints"/>
+  </node>
+</launch>

@@ -1,0 +1,5 @@
+<launch>
+  <group ns="/xiroi/">
+    <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/>
+  </group>
+</launch>

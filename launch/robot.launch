@@ -1,0 +1,47 @@
+<launch>
+  <arg name="namespace_arg" default="/xiroi" />
+  <arg name="simulation" default="false" />
+
+
+  <!-- PLACE -->
+  <arg name="place" default="emissari.yaml"/>
+
+  <group ns="$(arg namespace_arg)">
+
+    <!-- VEHICLE FRAMES -->
+    <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
+
+    <!--DYNAMICS -->
+    <include file="$(find xiroi)/launch/modules/dynamics.launch"/>
+
+    <!--CONTROL-->
+    <include file="$(find xiroi)/launch/modules/control.launch"/>
+
+    <!--SENSORS-->
+    <include file="$(find xiroi)/launch/modules/sensors.launch">
+      <arg name="simulation" value="$(arg simulation)"/>
+    </include>
+
+    <!--THRUSTERS-->
+    <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
+
+    <!--TELEOPERATION-->
+    <include file="$(find xiroi)/launch/modules/teleoperation.launch"/>
+
+    <!--SAFETY-->
+    <!-- <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/> -->
+
+    <!-- NED Origin -->
+    <arg name="placesDir" default="$(find xiroi)/config/places"/>
+    <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
+
+    <!-- MULTIMASTER -->
+    <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" >
+      <param name="_mcast_group" value="224.0.0.1"/>
+    </node>
+    <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_xiroi.yaml"/>
+    <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_xiroi_topics.yaml"/>
+    <node name="master_sync" pkg="master_sync_fkie" type="master_sync" output="screen"/>
+
+  </group>
+</launch>

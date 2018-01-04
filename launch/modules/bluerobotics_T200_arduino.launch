@@ -1,0 +1,5 @@
+<launch>
+  <node respawn="true" pkg="xiroi" type="arduino_node.py" output="screen" name="arduino_node">
+    <rosparam command="load" file="$(find xiroi)/config/arduino.yaml"/>
+  </node>
+</launch>

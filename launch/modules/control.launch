@@ -1,0 +1,21 @@
+<launch>
+
+  <!--OPERATION NODE-->
+  <node name="control" pkg="xiroi" type="control.py" respawn="false" output="screen"/>
+  <node name="follower" pkg="xiroi" type="follower.py" respawn="false" output="screen"/>
+  <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/>
+
+  <!--ROBOT LOCALIZATION-->
+  <rosparam command="load" file="$(find xiroi)/config/robot_localization_operation.yaml" />
+
+  <!--continuous data sensors odom->xiroi-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_odom"/>
+  </node>
+
+  <!--continuous data sensors + GPS  map->odom-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+</launch>

@@ -1,0 +1,23 @@
+<launch>
+
+  <arg name="simulation" default="false"/>
+
+  <group unless="$(arg simulation)">
+    <!--IMU-->
+    <include file="$(find xiroi)/launch/modules/sensors/memsense_imu.launch"/>
+    <!--ATX Power Source-->
+    <include file="$(find xiroi)/launch/modules/sensors/m4atx.launch"/>
+    <!--EMLID GPS:publishes /sensors/gps (/sensors/gps_buoy_emlid_raw)-->
+    <include file="$(find xiroi)/launch/modules/sensors/emlid_gps.launch"/>
+    <!--USBL: publishes acoustic topics (/navigation/nav_sts_acoustic)-->
+    <include file="$(find xiroi)/launch/modules/sensors/evologics_usbl.launch"/>
+  </group>
+
+
+  <group if="$(arg simulation)">
+    <!--SIM SENSORS-->
+    <rosparam command="load" file="$(find xiroi)/config/sim_sensors.yaml"/>
+    <node name="sim_sensors" pkg="xiroi" type="sim_sensors.py" respawn="false" output="screen"/>
+  </group>
+
+</launch>
