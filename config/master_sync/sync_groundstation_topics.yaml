@@ -71,4 +71,9 @@ master_sync/sync_services: [/control/load_trajectory,
                             /send_trajectory,
                             /receive_trajectory,
                             /control/goto_holonomic,
-                            /control/disable_goto]
+                            /control/disable_goto,
+                            /xiroi/control/abort_mission,
+                            /xiroi/control/enable_keep_position,
+                            /xiroi/control/disable_keep_position,
+                            /xiroi/control/enable_teleoperation,
+                            /xiroi/control/disable_teleoperation]
