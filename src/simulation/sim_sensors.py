@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""@@This node is used to simulate Sparus II navigation sensors. It is only used
+"""@@This node is used to simulate navigation sensors. It is only used
 in simulation.@@"""
 
 # Basic ROS imports
