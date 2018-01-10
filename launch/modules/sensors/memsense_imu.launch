@@ -1,8 +1,8 @@
 <launch>
-    
+
     <!-- <group ns="xiroi"> -->
 
-      <!-- MEMSENSE IMU NODE --> 
+      <!-- MEMSENSE IMU NODE -->
       <node pkg="memsense_imu" type="imu_node" name="imu_node" output="screen">
         <param name="polling_rate" value="150.00" type="double" />
         <param name="filter_rate"  value="10.0" type="double" />
@@ -28,7 +28,7 @@
         <param name="mags_range"   value="1.8999999999999999" type="double" />
         <param name="mags_var"     value="0.0" type="double" />
 
-        <remap from="imu/data" to="sensors/imu_raw"/>
+        <remap from="imu/data" to="sensors/imu_raw_driver"/>
         <remap from="imu/data_calibrated" to="sensors/imu_raw_calibrated"/>
         <remap from="imu/data_filtered" to="sensors/imu_raw_filtered"/>
         <remap from="imu/data_filtered_calibrated" to="sensors/imu_raw_filtered_calibrated"/>
@@ -38,7 +38,7 @@
         <remap from="imu/mag_filtered_calibrated" to="sensors/imu_mag_filtered_calibrated"/>
       </node>
 
-      <!-- IMU FILTER MADGWICK NODE -->  
+      <!-- IMU FILTER MADGWICK NODE -->
       <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_node" output="screen">
         <param name="stateless" value="false"/>
         <param name="fixed_frame" value="odom"/>
@@ -49,9 +49,9 @@
         <param name="use_magnetic_field_msg" value="true"/>
         <param name="world_frame" value="ned"/>
 
-        <remap from="imu/data_raw" to="sensors/imu_raw"/>     <!-- subscriber -->  
-        <remap from="imu/mag" to="sensors/imu_mag"/>          <!-- subscriber -->  
-        <remap from="imu/data" to="sensors/imu"/>        <!-- publisher -->  
+        <remap from="imu/data_raw" to="sensors/imu_raw_driver"/>     <!-- subscriber -->
+        <remap from="imu/mag" to="sensors/imu_mag"/>          <!-- subscriber -->
+        <remap from="imu/data" to="sensors/imu_raw"/>        <!-- publisher -->
       </node>
 
     <!-- </group> -->

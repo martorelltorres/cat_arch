@@ -45,7 +45,13 @@ master_sync/sync_topics: [/control/thrusters_data,
                           /diagnostics,
                           #Xiroi
                           /xiroi/nav_sts,
-                          /xiroi/joy]
+                          /xiroi/joy,
+                          /xiroi/odometry/filtered_map,
+                          /xiroi/odometry/filtered_odom,
+                          /xiroi/sensors/gps,
+                          /xiroi/setpoints,
+                          /xiroi/control/ack_ack,
+                          /xiroi/control/ack_joy]
                           # /xiroi/safety]
 
 master_sync/sync_services: [/control/load_trajectory,
@@ -71,4 +77,9 @@ master_sync/sync_services: [/control/load_trajectory,
                             /send_trajectory,
                             /receive_trajectory,
                             /control/goto_holonomic,
-                            /control/disable_goto]
+                            /control/disable_goto,
+                            /xiroi/control/abort_mission,
+                            /xiroi/control/enable_keep_position,
+                            /xiroi/control/disable_keep_position,
+                            /xiroi/control/enable_teleoperation,
+                            /xiroi/control/disable_teleoperation]

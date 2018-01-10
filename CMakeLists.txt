@@ -44,6 +44,3 @@ catkin_package(
   message_runtime)
 
 include_directories(${catkin_INCLUDE_DIRS})
-
-add_executable(nav_sat_pub src/sensors/nav_sat_pub.cpp)
-target_link_libraries(nav_sat_pub ${catkin_LIBRARIES})

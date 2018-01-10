@@ -2,21 +2,21 @@
 
 """
     A ROS Node for the Arduino microcontroller
-    
+
     Created for the Pi Robot Project: http://www.pirobot.org
     Copyright (c) 2012 Patrick Goebel.  All rights reserved.
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details at:
-    
+
     http://www.gnu.org/licenses/gpl.html
-""" 
+"""
 
 import rospy
 from ros_arduino_python.arduino_driver import Arduino
@@ -49,7 +49,7 @@ class ArduinoROS():
         self.rising_rate = 0.3 #0.3
         self.falling_rate = 1.0 #1
         self.setpoint_limit = 0.6 #1
-      
+
         # Overall loop rate: should be faster than fastest sensor rate
         self.rate = int(rospy.get_param("~rate", 50))
         r = rospy.Rate(self.rate)
@@ -58,7 +58,7 @@ class ArduinoROS():
         rospy.Subscriber("setpoints", Setpoints, self.callback)
         self.setpoints_corrected = rospy.Publisher("setpoints_corrected", Setpoints, queue_size=1)
         self.thruster_current = rospy.Publisher("thruster_current",Current, queue_size=1)
-        
+
         #Services
         self.thrusters_enabled = True
         self.recovery_srv = rospy.Service('control/disable_thrusters',
@@ -69,10 +69,10 @@ class ArduinoROS():
         # Make the connection
         self.controller.connect()
         rospy.loginfo("Connected to Arduino on port " + self.port + " at " + str(self.baud) + " baud")
-     
+
         self.controller.pin_mode(self.current_sensor_power_pin, 1)
         self.controller.digital_write(self.current_sensor_power_pin,1)
-    
+
         while not rospy.is_shutdown():
             current = self.controller.analog_read(self.current_sensor_pin)
             # publish
@@ -81,7 +81,7 @@ class ArduinoROS():
             msg.current = ((current/1024.0*5.0) - 2.41)/0.066
             self.thruster_current.publish(msg)
             r.sleep()
-    
+
     def disable_thrusters(self,req):
         self.controller.servo_write(self.left_thruster_pin,1500)
         self.controller.servo_write(self.right_thruster_pin,1500)
@@ -91,12 +91,12 @@ class ArduinoROS():
     def limitSetpoint(self, msg, time, old_msg, old_time):
         #Rate calculation
         rate = (msg - old_msg)/(time - old_time)
-       
+
         # Case 1
         if (rate>0 and msg>0 and rate > self.rising_rate):
             msg = (time-old_time)*self.rising_rate + old_msg
         # Case 2
-        elif (rate<0 and msg>=0 and rate < -self.falling_rate): 
+        elif (rate<0 and msg>=0 and rate < -self.falling_rate):
             msg = -(time-old_time)*self.falling_rate + old_msg
         # Case 3
         elif (rate<0 and msg<0  and rate < -self.rising_rate):
@@ -118,7 +118,7 @@ class ArduinoROS():
         time_dif=actual_time-message_time
 
         # if time_dif<delay_threshold:
-            
+
         msg0=msg.setpoints[0];
         msg1=msg.setpoints[1];
         # time=msg.header.stamp.to_sec()
@@ -145,12 +145,12 @@ class ArduinoROS():
             msg1 = self.setpoint_limit
         elif msg1 < -self.setpoint_limit:
             msg1 = -self.setpoint_limit
-                
+
         if self.thrusters_enabled:
             print str(1500+msg0*400) + ' ' + str(1500+msg1*400)
             self.controller.servo_write(self.left_thruster_pin,1500+msg0*400)
             self.controller.servo_write(self.right_thruster_pin,1500+msg1*400)
-     
+
         self.old_time = time
         self.old_msg0 = msg0
         self.old_msg1 = msg1
@@ -168,7 +168,7 @@ class ArduinoROS():
             rospy.sleep(2)
         except:
             pass
-        
+
         # Close the serial port
         try:
             self.controller.close()

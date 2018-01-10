@@ -5,7 +5,7 @@ roslib.load_manifest('xiroi')
 from xiroi.msg import Setpoints
 from sensor_msgs.msg import Joy
 from math import *
-import numpy as np 
+import numpy as np
 from std_msgs.msg import String
 
 class Controller:
@@ -14,10 +14,10 @@ class Controller:
         self.map_ack_init = False
         self.map_ack_alive = True
         self.last_map_ack = 0.0
-       
+
         # Publisher
         self.pub_thrusters_setpoints = rospy.Publisher(
-            'setpoints',
+            'setpoints_req',
             Setpoints,
             queue_size = 1)
 
@@ -54,7 +54,7 @@ class Controller:
             self.map_ack_init = True
             self.seq = self.seq + 1
             self.last_map_ack = rospy.Time.now().to_sec()
-       
+
 
     def joystick_data_callback(self, data):
         rospy.loginfo( data.axes)
@@ -86,7 +86,7 @@ class Controller:
                 self.pub_thrusters_setpoints.publish(self.msg)
                 print "map_ack lost"
         else:
-            rospy.loginfo("%s: waiting for map ack...")    
+            rospy.loginfo("%s: waiting for map ack...")
 
         # Send ack message
         msg = String()
@@ -102,4 +102,3 @@ if __name__ == '__main__':
     rospy.spin()
 
 
-   

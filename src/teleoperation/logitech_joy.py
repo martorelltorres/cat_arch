@@ -94,20 +94,20 @@ class LogitechFX10(JoystickBase):
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_U] = joy.axes[ LEFT_JOY_VERTICAL]
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_V] = -joy.axes[RIGHT_JOY_HORIZONTAL]
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_W] = joy.axes[RIGHT_JOY_VERTICAL]
-        self.joy_msg.axes[JoystickBase.AXIS_TWIST_R] = -joy.axes[LEFT_JOY_HORIZONTAL]
-        
+        self.joy_msg.axes[JoystickBase.AXIS_TWIST_R] = joy.axes[LEFT_JOY_HORIZONTAL]
+
         # Enable/disable keep position
-        if joy.buttons[BUTTON_START] == 1.0: 
+        if joy.buttons[BUTTON_START] == 1.0:
             self.enable_keep_position()
 
-        if joy.buttons[BUTTON_BACK] == 1.0: 
+        if joy.buttons[BUTTON_BACK] == 1.0:
             self.disable_keep_position()
 
         #Enable/disable teleoperation
-        if joy.buttons[BUTTON_A] == 1.0: 
+        if joy.buttons[BUTTON_A] == 1.0:
             self.enable_teleoperation()
 
-        if joy.buttons[BUTTON_Y] == 1.0: 
+        if joy.buttons[BUTTON_Y] == 1.0:
             self.disable_teleoperation()
 
 if __name__ == '__main__':

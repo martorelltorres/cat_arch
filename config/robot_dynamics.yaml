@@ -2,7 +2,7 @@
 vehicle_name: "xiroi"
 
 dynamics/xiroi/number_of_thrusters: 2
-dynamics/xiroi/thrusters_topic: "/control/thrusters_data"
+dynamics/xiroi/thrusters_topic: "thrusters_setpoints"
 
 dynamics/xiroi/period: 0.05
 dynamics/xiroi/mass: 34.5
@@ -20,7 +20,7 @@ dynamics/xiroi/dzv: 0.05
 dynamics/xiroi/dv: 0.05
 dynamics/xiroi/dh: 0.40
 dynamics/xiroi/density: 1030.0
- 
+
 dynamics/xiroi/thrusters_matrix: [[1.0, 1.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[0.0, 0.0],[-0.16, 0.16]]
 
 # [0.1337, 0.0, 0.0, 0.0, 1.6643, 0.0, 0.0, 0.0, 1.6643]
