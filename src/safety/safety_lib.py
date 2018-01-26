@@ -142,7 +142,7 @@ class SafetyManager(object):
     # self.emerge = False
     self.absolute_timeout = 20      # Seconds
     self.communication_timeout = 15 # Seconds
-    self.min_cell_voltage = 12.0     # Volts
+    self.min_cell_voltage = 11.95   # Volts
     self.recoverer = RecoveryActions()
     self.name = 'SafetyManager'
 
