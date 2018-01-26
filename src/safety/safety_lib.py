@@ -150,9 +150,9 @@ class SafetyManager(object):
     self.diagnostic = DiagnosticHelper(self.name, "hw")
 
     # Set Safety Monitors
-    self.global_timeout_monitor = TimeoutMonitor('GlobalTimerMonitor',
-                                                  timeout = self.absolute_timeout,
-                                                  on_timeout = self.abort_mission)
+    # self.global_timeout_monitor = TimeoutMonitor('GlobalTimerMonitor',
+    #                                               timeout = self.absolute_timeout,
+    #                                               on_timeout = self.abort_mission)
     self.navsts_timeout_monitor = TimeoutMonitor('NavigationTimeoutMonitor',
                                                   timeout = 120.0,
                                                   on_timeout = self.abort_mission,
@@ -168,7 +168,7 @@ class SafetyManager(object):
     self.minimum_cell_voltage_monitor  = ValueMonitor('MinCellVoltage',
                                                       min_value = self.min_cell_voltage,
                                                       on_min = self.abort_mission)
-    self.global_timeout_monitor.setDiagnostics(self.diagnostic)
+    # self.global_timeout_monitor.setDiagnostics(self.diagnostic)
     self.navsts_timeout_monitor.setDiagnostics(self.diagnostic)
     self.joy_timeout_monitor.setDiagnostics(self.diagnostic)
     self.gps_timeout_monitor.setDiagnostics(self.diagnostic)
@@ -241,7 +241,7 @@ class SafetyManager(object):
     :param event: Timer event
     """
     self.elapsed_time = (rospy.Time.now() - self.init_time).to_sec()
-    self.global_timeout_monitor.update()
+    # self.global_timeout_monitor.update()
     # Publish total time
     self.publish_total_time()
     # Publish config once
