@@ -60,6 +60,11 @@ class ArduinoROS():
     def blinking_leds(self, data):
         self.controller.digital_write(2, 0)
 
+        self.full_charge = 12.65        # 100%
+        self.mediumUP_charge = 12.45    # 75%
+        self.mediumDOWN_charge = 12.24  # 50%
+        self.low_charge = 12.06         # 25%
+
         if (data.state_of_charge==100):
             for i in range(4):
                 self.controller.digital_write(2, 1)

@@ -5,5 +5,6 @@ frames:
   sensors:
     imu: "imu"
     gps: "gps"
+    buoy: "gps"
     origin_suffix: "origin"
-  robot: "xiroi"   
+  robot: "xiroi"

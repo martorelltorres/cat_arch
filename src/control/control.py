@@ -17,14 +17,8 @@ import rosparam
 
 class Control:
     def __init__(self):
-
         # Initialize some parameters
-        self.full_charge = 12.65        # 100%
-        self.mediumUP_charge = 12.45    # 75%
-        self.mediumDOWN_charge = 12.24  # 50%
-        self.low_charge = 12.06         # 25%
-
-        self.init_soc_threshold=55
+        self.init_soc_threshold = 55
 
         self.imu_init = False
         self.gps_init = False
@@ -36,7 +30,7 @@ class Control:
         self.ned = NED.NED(self.origin_latitude, self.origin_longitude, 0.0)
 
         # Subscribers
-        #rospy.Subscriber("battery_status_m4atx", PowerReading, self.control_battery)
+        rospy.Subscriber("sensors/battery", PowerReading, self.control_battery)
         rospy.Subscriber("sensors/imu_raw", Imu, self.control_imu)
         rospy.Subscriber("sensors/gps_raw", NavSatFix, self.control_gps)
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.control_navsts)
@@ -47,20 +41,9 @@ class Control:
         self.gps_pose_pub = rospy.Publisher('sensors/gps', PoseWithCovarianceStamped, queue_size = 1)
 
     def control_battery(self,data):
+        state_of_charge = data.input_soc
 
-        self.read_input_voltage = data.volts_read_value[0]
-        self.read_twelve_volts = data.volts_read_value[1]
-        self.read_five_volts = data.volts_read_value[2]
-        self.read_threepointthree_volts = data.volts_read_value[3]
-        self.read_ignition_voltage = data.volts_read_value[4]
-
-        self.full_input_voltage = data.volts_full_value[0]
-        self.full_twelve_volts = data.volts_full_value[1]
-        self.full_five_volts = data.volts_full_value[2]
-        self.full_threepointthree_volts = data.volts_full_value[3]
-        self.state_of_charge = data.input_soc
-
-        if(self.state_of_charge>self.init_soc_threshold):
+        if(state_of_charge>self.init_soc_threshold):
             self.atx_init = True
         else:
             print "stopping thrusters"
