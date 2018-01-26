@@ -150,9 +150,9 @@ class SafetyManager(object):
     self.diagnostic = DiagnosticHelper(self.name, "hw")
 
     # Set Safety Monitors
-    self.global_timeout_monitor = TimeoutMonitor('GlobalTimerMonitor',
-                                                  timeout = self.absolute_timeout,
-                                                  on_timeout = self.abort_mission)
+    # self.global_timeout_monitor = TimeoutMonitor('GlobalTimerMonitor',
+    #                                               timeout = self.absolute_timeout,
+    #                                               on_timeout = self.abort_mission)
     self.navsts_timeout_monitor = TimeoutMonitor('NavigationTimeoutMonitor',
                                                   timeout = 120.0,
                                                   on_timeout = self.abort_mission,
@@ -165,30 +165,21 @@ class SafetyManager(object):
                                                 timeout = self.communication_timeout,
                                                 on_timeout = self.abort_mission,
                                                 wait_time = 120.0)
-
-
     self.minimum_cell_voltage_monitor  = ValueMonitor('MinCellVoltage',
                                                       min_value = self.min_cell_voltage,
                                                       on_min = self.abort_mission)
-
-
-    self.global_timeout_monitor.setDiagnostics(self.diagnostic)
+    # self.global_timeout_monitor.setDiagnostics(self.diagnostic)
     self.navsts_timeout_monitor.setDiagnostics(self.diagnostic)
     self.joy_timeout_monitor.setDiagnostics(self.diagnostic)
     self.gps_timeout_monitor.setDiagnostics(self.diagnostic)
     self.minimum_cell_voltage_monitor.setDiagnostics(self.diagnostic)
 
-
-    # Setup Subscribers 
+    # Setup Subscribers
     rospy.Subscriber("/navigation/nav_sts",NavSts,self.nav_sts_callback,queue_size = 1)
-
     rospy.Subscriber("/navigation/nav_sts_acoustic",NavSts,self.nav_sts_callback,queue_size = 1)
-
-    rospy.Subscriber("/xiroi/battery_status_m4atx",PowerReading,self.m4atx_callback,queue_size = 1)
-
-    rospy.Subscriber("/xiroi/control/ack_ack",String, self.ack_ack_callback,queue_size = 1)
-
-    rospy.Subscriber("/xiroi/sensors/gps",NavSatTransform,self.pose_callback,queue_size = 1)
+    rospy.Subscriber("sensors/battery", PowerReading, self.m4atx_callback, queue_size = 1)
+    rospy.Subscriber("control/ack_ack", String, self.ack_ack_callback,queue_size = 1)
+    rospy.Subscriber("sensors/gps",NavSatTransform,self.pose_callback,queue_size = 1)
 
     # Setup TotalTime Publisher
     self.tt_pub = rospy.Publisher(
@@ -217,7 +208,7 @@ class SafetyManager(object):
     :param nav: Navigation message (NavSts)
     """
     self.navigation_timeout_monitor.update()
-    
+
 
   def m4atx_callback(self, m4atx):
     """ Battery Management System callback to update the
@@ -250,7 +241,7 @@ class SafetyManager(object):
     :param event: Timer event
     """
     self.elapsed_time = (rospy.Time.now() - self.init_time).to_sec()
-    self.global_timeout_monitor.update()
+    # self.global_timeout_monitor.update()
     # Publish total time
     self.publish_total_time()
     # Publish config once
