@@ -14,7 +14,7 @@
   <group unless="$(arg simulateGps)">
     <rosparam command="load" file="$(find xiroi)/config/emlid_gps.yaml" />
     <node name="emlid_driver" pkg="emlid_reach_tcp" type="emlid_driver.py" output="screen">
-      <remap from="/emlid_gps" to="sensors/gps_raw" />
+      <remap from="emlid_gps" to="sensors/gps_raw" />
       <remap from="/diagnostics" to="sensors/gps_diagnostics" />
     </node>
   </group>
