@@ -22,6 +22,9 @@ class WaypointFollowerNode:
     def __init__(self):
         self.follower = WaypointFollower()
 
+	self.setpoint_timeout = rospy.Duration(0.2)
+	self.setpoints = Setpoints()
+	self.setpoints.setpoints = np.array([0.0, 0.0])
         self.keep_position_enabled = False
         self.teleoperation_enabled = True
 
@@ -57,6 +60,9 @@ class WaypointFollowerNode:
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.waypoint_callback)           #Turbot surface position
         rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.waypoint_callback)  #Turbot underwater position
         rospy.Subscriber("odometry/filtered_map",Odometry,self.current_pose_callback)     #Current position and orientation
+        rospy.Timer(rospy.Duration(0.1), self.setpoint_timer)
+
+
 
     def draw_marker(self):
         #Security radius marker
@@ -89,9 +95,16 @@ class WaypointFollowerNode:
 
         self.turbot_pose_pub.publish(self.waypoint)
 
+    def setpoint_timer(self, event):
+	if self.teleoperation_enabled:
+	    time_now = rospy.Time.now()
+            if time_now - self.setpoints.header.stamp > self.setpoint_timeout:
+		self.setpoints.setpoints = np.array([0.0, 0.0])
+            self.pub_thrusters_setpoints.publish(self.setpoints)
+
     def setpoints_req(self, msg):
         if self.teleoperation_enabled:
-            self.pub_thrusters_setpoints.publish(msg)
+	    self.setpoints = msg
 
     def waypoint_callback(self, msg):
         if self.keep_position_enabled:
@@ -135,6 +148,8 @@ class WaypointFollowerNode:
         print "DISABLE KEEP POSITION"
         self.keep_position_enabled = False
         self.teleoperation_enabled = True
+	self.setpoints.setpoints = np.array([0.0, 0.0])
+	self.setpoints.header.stamp = rospy.Time.now()
 
         self.follower.security_radius = 10.0
         self.follower.repulsion_radius = 7.5
