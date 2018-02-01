@@ -8,7 +8,7 @@ from ned_tools import NED
 from sensor_msgs.msg import Joy, NavSatFix, Imu, NavSatStatus
 from nav_msgs.msg import Odometry
 from visualization_msgs.msg import Marker
-#from m4atx_battery_monitor.msg import PowerReading
+from m4atx_battery_monitor.msg import PowerReading
 from auv_msgs.msg import NavSts
 from math import *
 import tf
@@ -29,16 +29,17 @@ class Control:
         self.origin_longitude = rospy.get_param("navigator/ned_origin_lon")
         self.ned = NED.NED(self.origin_latitude, self.origin_longitude, 0.0)
 
+	# Publishers
+        self.imu_pub = rospy.Publisher('sensors/imu', Imu, queue_size = 1)
+        self.gps_pose_pub = rospy.Publisher('sensors/gps', PoseWithCovarianceStamped, queue_size = 1)
+
+
         # Subscribers
         rospy.Subscriber("sensors/battery", PowerReading, self.control_battery)
         rospy.Subscriber("sensors/imu_raw", Imu, self.control_imu)
         rospy.Subscriber("sensors/gps_raw", NavSatFix, self.control_gps)
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.control_navsts)
         # rospy.Subscriber("joy", Joy, self.control_joy, queue_size = 4)
-
-        # Publishers
-        self.imu_pub = rospy.Publisher('sensors/imu', Imu, queue_size = 1)
-        self.gps_pose_pub = rospy.Publisher('sensors/gps', PoseWithCovarianceStamped, queue_size = 1)
 
     def control_battery(self,data):
         state_of_charge = data.input_soc
