@@ -37,7 +37,7 @@ class Controller:
                          self.ack_ack_callback,
                          queue_size=1)
 
-        rospy.Timer(rospy.Duration(1.0), self.check_map_ack)
+        rospy.Timer(rospy.Duration(0.1), self.check_map_ack)
 
         # Message
         self.msg = Setpoints()
