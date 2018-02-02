@@ -1,4 +1,4 @@
-port: /dev/ttyUSB0
+port: /dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A6008iB3-if00-port0
 baud: 57600
 timeout: 0.5
 rate: 50
