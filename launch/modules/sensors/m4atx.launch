@@ -4,3 +4,6 @@
     <remap from="battery_status_m4atx" to="sensors/battery"/>
   </node>
 </launch>
+
+<!-- if there are permissions problems with USB ATX ports run : sudo chmod a+rw /dev/bus/usb/001/003 
+to fix the problem being sure that Microchip Technology, Inc is BUS 001 DEV 003  -->
