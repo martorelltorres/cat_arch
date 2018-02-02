@@ -82,7 +82,7 @@ class Controller:
             else:
                 rospy.loginfo("%s: we have lost map_ack!")
                 #set setpoints to 0
-                msg.setpoints = [0.0,0.0]
+                self.msg.setpoints = [0.0,0.0]
                 self.pub_thrusters_setpoints.publish(self.msg)
                 print "map_ack lost"
         else:
