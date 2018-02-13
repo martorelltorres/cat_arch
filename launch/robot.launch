@@ -18,12 +18,14 @@
     <include file="$(find xiroi)/launch/modules/control.launch"/>
 
     <!--SENSORS-->
+    <!--sudo nano /etc/rc.local-->
+    <!--sudo chmod a+rw /dev/bus/usb/001/004-->
     <include file="$(find xiroi)/launch/modules/sensors.launch">
       <arg name="simulation" value="$(arg simulation)"/>
     </include>
 
     <!--THRUSTERS-->
-    <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
+    <!-- <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/> -->
 
     <!--TELEOPERATION-->
     <include file="$(find xiroi)/launch/modules/teleoperation.launch">
