@@ -7,7 +7,6 @@ from geometry_msgs.msg import Vector3Stamped, PoseStamped,PoseWithCovariance,Pos
 from ned_tools import NED
 from nav_msgs.msg import Odometry
 from visualization_msgs.msg import Marker
-from xiroi.srv import RecoveryAction
 from std_srvs.srv import Empty, EmptyRequest, EmptyResponse
 from auv_msgs.msg import NavSts
 from math import *
@@ -36,7 +35,7 @@ class WaypointFollowerNode:
 
         # Services
         self.recovery_srv       =       rospy.Service('control/abort_mission',
-                                                        RecoveryAction,
+                                                        Empty,
                                                         self.follower_abort_mission)
         self.enable_keep_position_srv = rospy.Service('control/enable_keep_position',
                                                         Empty,
@@ -56,7 +55,7 @@ class WaypointFollowerNode:
         self.markerPub = rospy.Publisher('robotMarker',Marker,queue_size=1)
 
         # Subscribers
-        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)           #Turbot surface position
+        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)                  #Turbot surface position
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.waypoint_callback)           #Turbot surface position
         rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.waypoint_callback)  #Turbot underwater position
         rospy.Subscriber("odometry/filtered_map",Odometry,self.current_pose_callback)     #Current position and orientation
