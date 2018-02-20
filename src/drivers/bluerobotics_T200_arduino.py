@@ -63,6 +63,10 @@ class ArduinoROS():
         self.recovery_srv = rospy.Service('control/disable_thrusters',
                                 Empty,
                                 self.disable_thrusters)
+
+        self.recovery_srv = rospy.Service('control/enable_thrusters',
+                                Empty,
+                                self.enable_thrusters)
         # Initialize the controlller
         self.controller = Arduino(self.port, self.baud, self.timeout)
         # Make the connection
@@ -85,6 +89,9 @@ class ArduinoROS():
         self.controller.servo_write(self.left_thruster_pin,1500)
         self.controller.servo_write(self.right_thruster_pin,1500)
         self.thrusters_enabled = False
+
+    def enable_thrusters(self,req):
+        self.thrusters_enabled = True
 
 
     def limitSetpoint(self, msg, time, old_msg, old_time):
