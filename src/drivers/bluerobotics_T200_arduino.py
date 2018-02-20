@@ -24,6 +24,7 @@ import os, time
 import thread
 from serial.serialutil import SerialException
 from xiroi.msg import Setpoints, Current
+from std_srvs.srv import Empty, EmptyResponse
 
 class ArduinoROS():
     def __init__(self):
