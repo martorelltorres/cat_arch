@@ -147,8 +147,8 @@ class WaypointFollowerNode:
         print "DISABLE KEEP POSITION"
         self.keep_position_enabled = False
         self.teleoperation_enabled = True
-	    self.setpoints.setpoints = np.array([0.0, 0.0])
-	    self.setpoints.header.stamp = rospy.Time.now()
+        self.setpoints.setpoints = np.array([0.0, 0.0])
+        self.setpoints.header.stamp = rospy.Time.now()
 
         self.follower.security_radius = 10.0
         self.follower.repulsion_radius = 7.5
