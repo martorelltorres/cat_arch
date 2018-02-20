@@ -24,7 +24,6 @@ import os, time
 import thread
 from serial.serialutil import SerialException
 from xiroi.msg import Setpoints, Current
-from xiroi.srv import RecoveryAction, RecoveryActionRequest, RecoveryActionResponse
 
 class ArduinoROS():
     def __init__(self):
@@ -60,9 +59,9 @@ class ArduinoROS():
         self.thruster_current = rospy.Publisher("thruster_current",Current, queue_size=1)
 
         #Services
-        self.thrusters_enabled = True
+        self.thrusters_enabled = False
         self.recovery_srv = rospy.Service('control/disable_thrusters',
-                                RecoveryAction,
+                                Empty,
                                 self.disable_thrusters)
         # Initialize the controlller
         self.controller = Arduino(self.port, self.baud, self.timeout)
