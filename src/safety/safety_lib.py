@@ -153,11 +153,12 @@ class SafetyManager(object):
     # self.global_timeout_monitor = TimeoutMonitor('GlobalTimerMonitor',
     #                                               timeout = self.absolute_timeout,
     #                                               on_timeout = self.abort_mission)
-    self.navsts_timeout_monitor = TimeoutMonitor('NavigationTimeoutMonitor',
+
+    self.navigation_timeout_monitor = TimeoutMonitor('NavigationTimeoutMonitor',
                                                   timeout = 120.0,
                                                   on_timeout = self.abort_mission,
                                                   wait_time = 60.0)
-    self.joy_timeout_monitor = TimeoutMonitor('JoyTimeoutMonitor',
+    self.communication_timeout_monitor = TimeoutMonitor('JoyTimeoutMonitor',
                                                 timeout = self.communication_timeout,
                                                 on_timeout = self.disable_thrusters,
                                                 wait_time = 120.0)
@@ -169,8 +170,8 @@ class SafetyManager(object):
                                                       min_value = self.min_cell_voltage,
                                                       on_min = self.abort_mission)
     # self.global_timeout_monitor.setDiagnostics(self.diagnostic)
-    self.navsts_timeout_monitor.setDiagnostics(self.diagnostic)
-    self.joy_timeout_monitor.setDiagnostics(self.diagnostic)
+    self.navigation_timeout_monitor.setDiagnostics(self.diagnostic)
+    self.communication_timeout_monitor.setDiagnostics(self.diagnostic)
     self.gps_timeout_monitor.setDiagnostics(self.diagnostic)
     self.minimum_cell_voltage_monitor.setDiagnostics(self.diagnostic)
 
@@ -226,7 +227,7 @@ class SafetyManager(object):
 
   def pose_callback(self, event):
     """ Check if we are getting USBL->Modem messages """
-    self.communication_timeout_monitor.update()
+    self.gps_timeout_monitor.update()
 
   # Monitor callbacks
   def disable_thrusters(self, monitor_name):
