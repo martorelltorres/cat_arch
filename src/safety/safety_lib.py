@@ -19,6 +19,8 @@ from std_msgs.msg import String
 from auv_msgs.msg import NavSts
 from diagnostic_msgs.msg import DiagnosticStatus
 from xiroi.msg import TotalTime
+from m4atx_battery_monitor.msg import PowerReading
+from sensor_msgs.msg import NavSatFix
 
 from std_srvs.srv import Empty, EmptyResponse
 
@@ -180,7 +182,7 @@ class SafetyManager(object):
     # rospy.Subscriber("/navigation/nav_sts_acoustic",NavSts,self.nav_sts_callback,queue_size = 1)
     rospy.Subscriber("sensors/battery", PowerReading, self.m4atx_callback, queue_size = 1)
     rospy.Subscriber("control/ack_ack", String, self.ack_ack_callback,queue_size = 1)
-    rospy.Subscriber("sensors/gps",NavSatTransform,self.pose_callback,queue_size = 1)
+    rospy.Subscriber("sensors/gps",NavSatFix,self.pose_callback,queue_size = 1)
 
     # Setup TotalTime Publisher
     self.tt_pub = rospy.Publisher(
