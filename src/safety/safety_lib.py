@@ -154,30 +154,30 @@ class SafetyManager(object):
     #                                               timeout = self.absolute_timeout,
     #                                               on_timeout = self.abort_mission)
 
-    self.navigation_timeout_monitor = TimeoutMonitor('NavigationTimeoutMonitor',
-                                                  timeout = 120.0,
-                                                  on_timeout = self.abort_mission,
-                                                  wait_time = 60.0)
+    # self.navigation_timeout_monitor = TimeoutMonitor('NavigationTimeoutMonitor',
+    #                                               timeout = 120.0,
+    #                                               on_timeout = self.abort_mission,
+    #                                               wait_time = 60.0)
     self.communication_timeout_monitor = TimeoutMonitor('JoyTimeoutMonitor',
                                                 timeout = self.communication_timeout,
-                                                on_timeout = self.disable_thrusters,
+                                                on_timeout = self.recoverer.disable_thrusters,
                                                 wait_time = 120.0)
     self.gps_timeout_monitor = TimeoutMonitor('GpsTimeoutMonitor',
                                                 timeout = self.communication_timeout,
-                                                on_timeout = self.abort_mission,
+                                                on_timeout = self.recoverer.disable_thrusters,
                                                 wait_time = 120.0)
     self.minimum_cell_voltage_monitor  = ValueMonitor('MinCellVoltage',
                                                       min_value = self.min_cell_voltage,
-                                                      on_min = self.abort_mission)
+                                                      on_min = self.recoverer.disable_thrusters)
     # self.global_timeout_monitor.setDiagnostics(self.diagnostic)
-    self.navigation_timeout_monitor.setDiagnostics(self.diagnostic)
+    # self.navigation_timeout_monitor.setDiagnostics(self.diagnostic)
     self.communication_timeout_monitor.setDiagnostics(self.diagnostic)
     self.gps_timeout_monitor.setDiagnostics(self.diagnostic)
     self.minimum_cell_voltage_monitor.setDiagnostics(self.diagnostic)
 
     # Setup Subscribers
-    rospy.Subscriber("/navigation/nav_sts",NavSts,self.nav_sts_callback,queue_size = 1)
-    rospy.Subscriber("/navigation/nav_sts_acoustic",NavSts,self.nav_sts_callback,queue_size = 1)
+    # rospy.Subscriber("/navigation/nav_sts",NavSts,self.nav_sts_callback,queue_size = 1)
+    # rospy.Subscriber("/navigation/nav_sts_acoustic",NavSts,self.nav_sts_callback,queue_size = 1)
     rospy.Subscriber("sensors/battery", PowerReading, self.m4atx_callback, queue_size = 1)
     rospy.Subscriber("control/ack_ack", String, self.ack_ack_callback,queue_size = 1)
     rospy.Subscriber("sensors/gps",NavSatTransform,self.pose_callback,queue_size = 1)
@@ -199,16 +199,16 @@ class SafetyManager(object):
     self.diagnostic.add("Safety", "Ready!")
     self.diagnostic.setLevel(DiagnosticStatus.OK ,'OK')
 
-  # Subscriber callbacks
-  def nav_sts_callback(self, nav):
-    """ NavSts callback to:
-     * Update the navigation timeout
-     * Check minimum altitude
-     * Check maximum depth
-     * Check zero velocity depth
-    :param nav: Navigation message (NavSts)
-    """
-    self.navigation_timeout_monitor.update()
+  # # Subscriber callbacks
+  # def nav_sts_callback(self, nav):
+  #   """ NavSts callback to:
+  #    * Update the navigation timeout
+  #    * Check minimum altitude
+  #    * Check maximum depth
+  #    * Check zero velocity depth
+  #   :param nav: Navigation message (NavSts)
+  #   """
+  #   self.navigation_timeout_monitor.update()
 
 
   def m4atx_callback(self, m4atx):
