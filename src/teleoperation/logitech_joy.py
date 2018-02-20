@@ -22,6 +22,24 @@ class LogitechFX10(JoystickBase):
         """Class Constructor."""
         JoystickBase.__init__(self, name)
 
+        # ... enable thrusters
+        rospy.wait_for_service(
+            '/control/enable_thrusters', 10)
+        try:
+            self.enable_thrusters = rospy.ServiceProxy(
+                '/control/enable_thrusters', Empty)
+        except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+
+        # ... disable thrusters
+        rospy.wait_for_service(
+            '/control/disable_thrusters', 10)
+        try:
+            self.disable_thrusters = rospy.ServiceProxy(
+                '/control/disable_thrusters', Empty)
+        except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+
         # ... enable keep position
         rospy.wait_for_service(
             'control/enable_keep_position', 10)
@@ -96,6 +114,14 @@ class LogitechFX10(JoystickBase):
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_W] = joy.axes[RIGHT_JOY_VERTICAL]
         self.joy_msg.axes[JoystickBase.AXIS_TWIST_R] = joy.axes[LEFT_JOY_HORIZONTAL]
 
+        # Enable/disable thrusters
+        if joy.axes[LEFT_TRIGGER] < -0.9 and joy.axes[RIGHT_TRIGGER] < -0.9:
+            self.disable_thrusters()
+            rospy.sleep(1.0)
+
+        if joy.buttons[BUTTON_LEFT] == 1.0 and joy.buttons[BUTTON_RIGHT] == 1.0:
+            self.enable_thrusters()
+            
         # Enable/disable keep position
         if joy.buttons[BUTTON_START] == 1.0:
             self.enable_keep_position()
