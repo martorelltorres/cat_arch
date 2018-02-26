@@ -18,4 +18,6 @@ master_sync/sync_services: [/xiroi/control/abort_mission,
                             /xiroi/control/enable_keep_position,
                             /xiroi/control/disable_keep_position,
                             /xiroi/control/enable_teleoperation,
-                            /xiroi/control/disable_teleoperation]
+                            /xiroi/control/disable_teleoperation,
+                            /xiroi/control/disable_thrusters,
+                            /xiroi/control/enable_thrusters]
