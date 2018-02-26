@@ -25,6 +25,7 @@ import thread
 from serial.serialutil import SerialException
 from xiroi.msg import Setpoints, Current
 from std_srvs.srv import Empty, EmptyResponse
+from recovery_actions_lib import RecoveryActions
 
 class ArduinoROS():
     def __init__(self):
@@ -44,6 +45,7 @@ class ArduinoROS():
         self.current_sensor_pin = rospy.get_param("~current_sensor_pin", 0)
         self.current_sensor_power_pin = rospy.get_param("~current_sensor_power_pin", 3)
         self.first_time=True;
+        self.recoverer = RecoveryActions()
 
         #Slew rate parameters
         self.rising_rate = 0.3 #0.3
@@ -61,13 +63,10 @@ class ArduinoROS():
 
         #Services
         self.thrusters_enabled = False
-        self.recovery_srv = rospy.Service('control/disable_thrusters',
-                                Empty,
-                                self.disable_thrusters)
-
-        self.recovery_srv = rospy.Service('control/enable_thrusters',
-                                Empty,
-                                self.enable_thrusters)
+        # Create services
+        self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters_srv)
+        self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters_srv)
+     
         # Initialize the controlller
         self.controller = Arduino(self.port, self.baud, self.timeout)
         # Make the connection
@@ -86,13 +85,20 @@ class ArduinoROS():
             self.thruster_current.publish(msg)
             r.sleep()
 
-    def disable_thrusters(self,req):
+    def disable_thrusters_srv(self,req):
+        """ Disable thruster service """
         self.controller.servo_write(self.left_thruster_pin,1500)
         self.controller.servo_write(self.right_thruster_pin,1500)
         self.thrusters_enabled = False
+        rospy.loginfo("THRUSTERS DISABLED")
+        return EmptyResponse()
+    
 
-    def enable_thrusters(self,req):
+    def enable_thrusters_srv(self,req):
+        """ Enable thruster service """
         self.thrusters_enabled = True
+        rospy.loginfo("THRUSTERS ENABLED")
+        return EmptyResponse()
 
 
     def limitSetpoint(self, msg, time, old_msg, old_time):
