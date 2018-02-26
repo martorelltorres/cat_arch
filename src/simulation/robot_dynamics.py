@@ -13,6 +13,7 @@ import PyKDL
 # Import msgs
 from nav_msgs.msg import Odometry
 from xiroi.msg import Setpoints
+from std_srvs.srv import Empty, EmptyResponse
 
 # More imports
 import math
@@ -53,6 +54,7 @@ class Dynamics :
 
         # Load dynamic parameters
         self.get_config()
+        self.thrusters_enabled=False
 
         # Initialize vars and matrices. They are not init. in the constructor,
         # but readability is improved
@@ -68,6 +70,9 @@ class Dynamics :
                          Setpoints,
                          self.update_thrusters,
                          queue_size = 1)
+        # Create services
+        self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters_srv)
+        self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters_srv)
 
         # Show message
         rospy.loginfo("[%s]: initialized", self.name)
@@ -131,10 +136,11 @@ class Dynamics :
 
     def update_thrusters(self, thrusters) :
         """ Thruster callback, input in   """
-        self.old_u = self.u
-        self.u = np.array(thrusters.setpoints ).clip(min=-1, max=1)
-        # TODO change this hardcoded 1200 to a param
-        self.u = self.u * 1200.0
+        if self.thrusters_enabled==True: 
+            self.old_u = self.u
+            self.u = np.array(thrusters.setpoints ).clip(min=-1, max=1)
+            # TODO change this hardcoded 1200 to a param
+            self.u = self.u * 1200.0
 
     def compute_currents(self):
         """ Water currents, returns a velocity """
@@ -151,6 +157,19 @@ class Dynamics :
         O = PyKDL.Rotation.RPY(self.p[3], self.p[4], self.p[5])
         currents = O.Inverse() * t
         return np.array([currents[0], currents[1], currents[2], 0, 0, 0])
+
+    def disable_thrusters_srv(self,req):
+        """ Disable thruster service """
+        self.thrusters_enabled = False
+        rospy.loginfo("THRUSTERS DISABLED")
+        return EmptyResponse()
+    
+
+    def enable_thrusters_srv(self,req):
+        """ Enable thruster service """
+        self.thrusters_enabled = True
+        rospy.loginfo("THRUSTERS ENABLED")
+        return EmptyResponse()
 
 
     def damping_matrix(self, vel):
