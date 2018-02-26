@@ -38,13 +38,14 @@ class RecoveryActions(object):
     except rospy.exceptions.ROSException:
       rospy.logfatal('abort_mission service FAILED')
 
+    #Server allocated in bluerobotics_T200_arduino.py
+
     try:
-      #Server allocated in arduino_node.py
       rospy.wait_for_service('control/disable_thrusters', 20)
-      self.disable_thrusters_srv = rospy.ServiceProxy(
+      self.abort_thrusters_srv = rospy.ServiceProxy(
                             'control/disable_thrusters', Empty)
     except rospy.exceptions.ROSException:
-      rospy.logfatal('disable_thrusters service FAILED')
+      self.no_disable_thrusters_service_timer = rospy.Timer(rospy.Duration(0.4), self.no_disable_thrusters_message)
 
     # Create service
     self.recovery_srv = rospy.Service('safety/recovery_action',
