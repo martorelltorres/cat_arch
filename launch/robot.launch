@@ -12,7 +12,7 @@
     <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
 
     <!--DYNAMICS -->
-    <include file="$(find xiroi)/launch/modules/dynamics.launch"/>
+    <include if="$(arg simulation)" file="$(find xiroi)/launch/modules/dynamics.launch"/>
 
     <!--CONTROL-->
     <include file="$(find xiroi)/launch/modules/control.launch"/>
@@ -25,7 +25,7 @@
     </include>
 
     <!--THRUSTERS-->
-    <!-- <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/> -->
+    <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
 
     <!--TELEOPERATION-->
     <include file="$(find xiroi)/launch/modules/teleoperation.launch">
@@ -33,7 +33,7 @@
     </include>
 
     <!--SAFETY-->
-    <!--node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/-->
+    <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/>
 
     <include file="$(find xiroi)/launch/modules/transforms.launch">
       <arg name="suffix" value="asc"/>
