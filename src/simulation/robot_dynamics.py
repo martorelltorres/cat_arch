@@ -13,6 +13,7 @@ import PyKDL
 # Import msgs
 from nav_msgs.msg import Odometry
 from xiroi.msg import Setpoints
+from std_srvs.srv import Empty, EmptyResponse
 
 # More imports
 import math
@@ -69,8 +70,24 @@ class Dynamics :
                          self.update_thrusters,
                          queue_size = 1)
 
+        #Services
+        self.thrusters_enabled = False
+        self.recovery_srv = rospy.Service('control/disable_thrusters',
+                                Empty,
+                                self.disable_thrusters)
+
+        self.recovery_srv = rospy.Service('control/enable_thrusters',
+                                Empty,
+                                self.enable_thrusters)
+
         # Show message
         rospy.loginfo("[%s]: initialized", self.name)
+
+    def disable_thrusters(self,req):
+        self.thrusters_enabled = False
+
+    def enable_thrusters(self,req):
+        self.thrusters_enabled = True
 
 
     def initialize(self):
@@ -131,6 +148,8 @@ class Dynamics :
 
     def update_thrusters(self, thrusters) :
         """ Thruster callback, input in   """
+        if not self.thrusters_enabled:
+            return
         self.old_u = self.u
         self.u = np.array(thrusters.setpoints ).clip(min=-1, max=1)
         # TODO change this hardcoded 1200 to a param
