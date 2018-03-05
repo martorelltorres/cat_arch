@@ -182,7 +182,7 @@ class SafetyManager(object):
     # rospy.Subscriber("/navigation/nav_sts_acoustic",NavSts,self.nav_sts_callback,queue_size = 1)
     rospy.Subscriber("sensors/battery", PowerReading, self.m4atx_callback, queue_size = 1)
     rospy.Subscriber("control/ack_ack", String, self.ack_ack_callback,queue_size = 1)
-    rospy.Subscriber("sensors/gps",NavSatFix,self.pose_callback,queue_size = 1)
+    rospy.Subscriber("sensors/gps_raw", NavSatFix, self.pose_callback,queue_size = 1)
 
     # Setup TotalTime Publisher
     self.tt_pub = rospy.Publisher(
@@ -218,7 +218,7 @@ class SafetyManager(object):
     voltage monitor
     :param bms: BMS message
     """
-    self.minimum_cell_voltage_monitor.update(m4atx.minCellVoltage)
+    self.minimum_cell_voltage_monitor.update(m4atx.volts_read_value[0])
 
   def ack_ack_callback(self, event):
     """ Map Acknowledge Acknoledgement callback to update the

@@ -10,7 +10,7 @@
     <!--EMLID GPS:publishes /sensors/gps (/sensors/gps_buoy_emlid_raw)-->
     <include file="$(find xiroi)/launch/modules/sensors/emlid_gps.launch"/>
     <!--USBL: publishes acoustic topics (/navigation/nav_sts_acoustic)-->
-    <include file="$(find xiroi)/launch/modules/sensors/evologics_usbl.launch"/>
+    <!--include file="$(find xiroi)/launch/modules/sensors/evologics_usbl.launch"/-->
   </group>
 
 
