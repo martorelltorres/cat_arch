@@ -1,0 +1,4 @@
+<launch>
+  <rosparam command="load" file="$(find xiroi)/config/waypoints.yaml" />
+  <node name="waypoint_publisher" pkg="xiroi" type="waypoint_publisher.py" respawn="false" output="screen"/>
+</launch>
