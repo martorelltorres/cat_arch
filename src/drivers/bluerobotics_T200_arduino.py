@@ -25,7 +25,6 @@ import thread
 from serial.serialutil import SerialException
 from xiroi.msg import Setpoints, Current
 from std_srvs.srv import Empty, EmptyResponse
-from recovery_actions_lib import RecoveryActions
 
 class ArduinoROS():
     def __init__(self):
@@ -45,7 +44,6 @@ class ArduinoROS():
         self.current_sensor_pin = rospy.get_param("~current_sensor_pin", 0)
         self.current_sensor_power_pin = rospy.get_param("~current_sensor_power_pin", 3)
         self.first_time=True;
-        self.recoverer = RecoveryActions()
 
         #Slew rate parameters
         self.rising_rate = 0.3 #0.3
