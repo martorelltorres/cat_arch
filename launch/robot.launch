@@ -19,7 +19,7 @@
 
     <!--SENSORS-->
     <!--sudo nano /etc/rc.local-->
-    <!--sudo chmod a+rw /dev/bus/usb/001/004-->
+    <!--sudo chmod a+rw /dev/bus/usb/001/003-->
     <include file="$(find xiroi)/launch/modules/sensors.launch">
       <arg name="simulation" value="$(arg simulation)"/>
     </include>
