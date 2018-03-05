@@ -35,6 +35,7 @@
     <!--SAFETY-->
     <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/>
 
+    <!--TRANSFORMS-->
     <include file="$(find xiroi)/launch/modules/transforms.launch">
       <arg name="suffix" value="asc"/>
     </include>

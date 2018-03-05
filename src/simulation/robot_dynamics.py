@@ -74,8 +74,24 @@ class Dynamics :
         self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters_srv)
         self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters_srv)
 
+        #Services
+        self.thrusters_enabled = False
+        self.recovery_srv = rospy.Service('control/disable_thrusters',
+                                Empty,
+                                self.disable_thrusters)
+
+        self.recovery_srv = rospy.Service('control/enable_thrusters',
+                                Empty,
+                                self.enable_thrusters)
+
         # Show message
         rospy.loginfo("[%s]: initialized", self.name)
+
+    def disable_thrusters(self,req):
+        self.thrusters_enabled = False
+
+    def enable_thrusters(self,req):
+        self.thrusters_enabled = True
 
 
     def initialize(self):
@@ -136,7 +152,7 @@ class Dynamics :
 
     def update_thrusters(self, thrusters) :
         """ Thruster callback, input in   """
-        if self.thrusters_enabled==True: 
+        if self.thrusters_enabled: 
             self.old_u = self.u
             self.u = np.array(thrusters.setpoints ).clip(min=-1, max=1)
             # TODO change this hardcoded 1200 to a param
