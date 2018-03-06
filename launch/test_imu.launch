@@ -4,7 +4,7 @@
 
 
   <!-- PLACE -->
-  <arg name="place" default="rcd_mallorca.yaml"/>
+  <arg name="place" default="uib_pool.yaml"/>
 
   <group ns="$(arg namespace_arg)">
 
@@ -19,21 +19,21 @@
 
     <!--SENSORS-->
     <!--sudo nano /etc/rc.local-->
-    <!--sudo chmod a+rw /dev/bus/usb/001/003-->
+    <!--sudo chmod a+rw /dev/bus/usb/001/004-->
     <include file="$(find xiroi)/launch/modules/sensors.launch">
       <arg name="simulation" value="$(arg simulation)"/>
     </include>
 
     <!--THRUSTERS-->
-    <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
+    <!-- <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/> -->
 
     <!--TELEOPERATION-->
-    <include file="$(find xiroi)/launch/modules/teleoperation.launch">
+<!--     <include file="$(find xiroi)/launch/modules/teleoperation.launch">
       <arg name="isGS" value="$(arg simulation)"/>
-    </include>
+    </include> -->
 
     <!--SAFETY-->
-    <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/>
+    <!--node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/-->
 
     <!--TRANSFORMS-->
     <include file="$(find xiroi)/launch/modules/transforms.launch">
@@ -43,14 +43,6 @@
     <!-- NED Origin -->
     <arg name="placesDir" default="$(find xiroi)/config/places"/>
     <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
-
-    <!-- MULTIMASTER -->
-    <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" >
-      <param name="_mcast_group" value="224.0.0.1"/>
-    </node>
-    <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_xiroi.yaml"/>
-    <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_xiroi_topics.yaml"/>
-    <node name="master_sync" pkg="master_sync_fkie" type="master_sync" output="screen"/>
 
   </group>
 </launch>

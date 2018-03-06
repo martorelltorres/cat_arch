@@ -18,7 +18,7 @@ import rosparam
 class Control:
     def __init__(self):
         # Initialize some parameters
-        self.init_soc_threshold = 55
+        self.init_soc_threshold = 20
 
         self.imu_init = False
         self.gps_init = False
@@ -47,7 +47,7 @@ class Control:
         if(state_of_charge>self.init_soc_threshold):
             self.atx_init = True
         else:
-            print "stopping thrusters"
+            print "Below SOC threshold: stopping thrusters"
 
     def control_joy(self,joy):
         self.time= rospy.Time().now()

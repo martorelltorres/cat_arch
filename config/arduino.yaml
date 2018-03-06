@@ -4,8 +4,8 @@ timeout: 0.5
 rate: 50
 base_frame: base_link
 #Thrusters pins
-left_thruster_pin: 0
-right_thruster_pin: 1
+left_thruster_pin: 1
+right_thruster_pin: 0
 #Thrusters controller
 rising_rate: 0.1
 falling_rate: 1

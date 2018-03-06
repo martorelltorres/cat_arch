@@ -24,7 +24,7 @@ class WaypointPublisher:
     self.started = False
 
     self.waypoint_pub = rospy.Publisher("/navigation/nav_sts", NavSts,queue_size=1)
-    rospy.Subscriber("odometry/filtered_map", Odometry, self.current_pose_callback)     #Current position and orientation
+    rospy.Subscriber("/xiroi/odometry/filtered_map", Odometry, self.current_pose_callback)     #Current position and orientation
     rospy.Timer(rospy.Duration(0.5), self.update)
     rospy.spin()
 
