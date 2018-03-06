@@ -71,8 +71,8 @@ class Dynamics :
                          self.update_thrusters,
                          queue_size = 1)
         # Create services
-        #self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters)
-        #self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters)
+        self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters)
+        self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters)
 
         #Services
         self.thrusters_enabled = True
