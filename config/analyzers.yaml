@@ -1,0 +1,14 @@
+diagnostic_aggregator:
+  pub_rate: 1.0 # Optional
+  base_path: '' # Optional, prepended to all diagnostic output
+  analyzers:
+    ekf:
+      type: GenericAnalyzer
+      path: EKF Localization
+      startswith: 'ekf'
+
+    safety:
+      type: GenericAnalyzer
+      path: Safety
+      startswith: 'Safety'
+

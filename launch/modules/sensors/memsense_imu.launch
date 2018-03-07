@@ -47,7 +47,7 @@
         <param name="publish_debug_topics" value="false"/>
         <param name="use_mag" value="true"/>
         <param name="use_magnetic_field_msg" value="true"/>
-        <param name="world_frame" value="ned"/>
+        <param name="world_frame" value="enu"/>
 
         <remap from="imu/data_raw" to="sensors/imu_raw_driver"/>     <!-- subscriber -->
         <remap from="imu/mag" to="sensors/imu_mag"/>          <!-- subscriber -->
