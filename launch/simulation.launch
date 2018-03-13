@@ -5,6 +5,5 @@
 
   <!-- ROSBRIDGE -->
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
-
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find xiroi)/rviz/xiroi.rviz"/>
 </launch>

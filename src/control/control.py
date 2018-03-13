@@ -21,9 +21,11 @@ class Control:
         self.init_soc_threshold = 55
 
         self.imu_init = False
-        self.gps_init = False
         self.navsts_init = False
         self.atx_init = False
+        self.gps_init = False
+        self.gps_min_time = rospy.Time(2)
+        self.init_time = rospy.Time().now()
 
         self.origin_latitude = rospy.get_param("navigator/ned_origin_lat")
         self.origin_longitude = rospy.get_param("navigator/ned_origin_lon")
@@ -32,6 +34,7 @@ class Control:
 	# Publishers
         self.imu_pub = rospy.Publisher('sensors/imu', Imu, queue_size = 1)
         self.gps_pose_pub = rospy.Publisher('sensors/gps', PoseWithCovarianceStamped, queue_size = 1)
+        self.set_pose_pub = rospy.Publisher('odometry/set_pose', PoseWithCovarianceStamped, queue_size = 1)
 
 
         # Subscribers
@@ -41,6 +44,7 @@ class Control:
         rospy.Subscriber("/navigation/nav_sts", NavSts, self.control_navsts)
         # rospy.Subscriber("joy", Joy, self.control_joy, queue_size = 4)
 
+        
     def control_battery(self,data):
         state_of_charge = data.input_soc
 
@@ -61,9 +65,10 @@ class Control:
         self.imu_pub.publish(data_imu)
 
     def control_gps(self, data_gps):
-        if not self.gps_init:
-            rospy.loginfo('GPS is ON')
-            self.gps_init=True
+        if rospy.Time().now() - self.init_time < self.gps_min_time
+            rospy.loginfo_throttle(1, 'Wait GPS to converge. Getting samples.')
+            break
+
 
         llh = [data_gps.latitude, data_gps.longitude, data_gps.altitude]
         ned = self.ned.geodetic2ned(llh)
@@ -78,6 +83,11 @@ class Control:
         msg.pose.covariance[0] = data_gps.position_covariance[0]
         msg.pose.covariance[7] = data_gps.position_covariance[4]
         msg.pose.covariance[14] = data_gps.position_covariance[8]
+
+        if not self.gps_init 
+            rospy.loginfo('Set GPS pose in EKF')
+            self.set_pose_pub.publish(msg)
+            self.gps_init = True
 
         self.gps_pose_pub.publish(msg)
 
