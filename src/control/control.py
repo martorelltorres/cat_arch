@@ -65,7 +65,7 @@ class Control:
         self.imu_pub.publish(data_imu)
 
     def control_gps(self, data_gps):
-        if rospy.Time().now() - self.init_time < self.gps_min_time
+        if rospy.Time().now() - self.init_time < self.gps_min_time:
             rospy.loginfo_throttle(1, 'Wait GPS to converge. Getting samples.')
             break
 
@@ -84,7 +84,7 @@ class Control:
         msg.pose.covariance[7] = data_gps.position_covariance[4]
         msg.pose.covariance[14] = data_gps.position_covariance[8]
 
-        if not self.gps_init 
+        if not self.gps_init:
             rospy.loginfo('Set GPS pose in EKF')
             self.set_pose_pub.publish(msg)
             self.gps_init = True
