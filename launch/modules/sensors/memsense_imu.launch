@@ -6,7 +6,7 @@
       <node pkg="memsense_imu" type="imu_node" name="imu_node" output="screen">
         <param name="polling_rate" value="150.00" type="double" />
         <param name="filter_rate"  value="10.0" type="double" />
-        <param name="frame_id"     value="imu" type="string" />
+        <param name="frame_id"     value="xiroi/imu" type="string" />
         <param name="serial_port"  value="/dev/serial/by-id/usb-Silicon_Labs_CP2101_USB_to_UART_Bridge_Controller_0001-if00-port0" type="string"/>
         <param name="imu_type"     value="nIMU_3temp" type="string" />
 
@@ -47,7 +47,7 @@
         <param name="publish_debug_topics" value="false"/>
         <param name="use_mag" value="true"/>
         <param name="use_magnetic_field_msg" value="true"/>
-        <param name="world_frame" value="ned"/>
+        <param name="world_frame" value="enu"/>
 
         <remap from="imu/data_raw" to="sensors/imu_raw_driver"/>     <!-- subscriber -->
         <remap from="imu/mag" to="sensors/imu_mag"/>          <!-- subscriber -->

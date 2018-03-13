@@ -106,8 +106,6 @@ class WaypointFollowerNode:
 	    self.setpoints = msg
 
     def waypoint_callback(self, msg):
-        if self.keep_position_enabled:
-            return
         # Convert from NED class to Pose class
         self.waypoint.header.stamp = rospy.Time.now()
         self.waypoint.pose.position.x = msg.position.north

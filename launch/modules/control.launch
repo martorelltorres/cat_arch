@@ -6,14 +6,7 @@
   <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/>
 
   <!--ROBOT LOCALIZATION-->
-  <rosparam command="load" file="$(find xiroi)/config/robot_localization_operation.yaml" />
-
-  <!--continuous data sensors odom->xiroi-->
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_odom" clear_params="true">
-    <remap from="odometry/filtered" to="odometry/filtered_odom"/>
-    <remap from="odometry/path" to="odometry/filtered_odom/path"/>
-  </node>
-
+  <rosparam command="load" file="$(find xiroi)/config/robot_localization.yaml" />
   <!--continuous data sensors + GPS  map->odom-->
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
     <remap from="odometry/filtered" to="odometry/filtered_map"/>

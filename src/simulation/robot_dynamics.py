@@ -71,28 +71,14 @@ class Dynamics :
                          self.update_thrusters,
                          queue_size = 1)
         # Create services
-        self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters_srv)
-        self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters_srv)
+        self.e_srv = rospy.Service('control/enable_thrusters', Empty, self.enable_thrusters)
+        self.d_srv = rospy.Service('control/disable_thrusters', Empty, self.disable_thrusters)
 
         #Services
-        self.thrusters_enabled = False
-        self.recovery_srv = rospy.Service('control/disable_thrusters',
-                                Empty,
-                                self.disable_thrusters)
-
-        self.recovery_srv = rospy.Service('control/enable_thrusters',
-                                Empty,
-                                self.enable_thrusters)
+        self.thrusters_enabled = True
 
         # Show message
         rospy.loginfo("[%s]: initialized", self.name)
-
-    def disable_thrusters(self,req):
-        self.thrusters_enabled = False
-
-    def enable_thrusters(self,req):
-        self.thrusters_enabled = True
-
 
     def initialize(self):
         """ Initialize vars and matrices """
@@ -174,14 +160,14 @@ class Dynamics :
         currents = O.Inverse() * t
         return np.array([currents[0], currents[1], currents[2], 0, 0, 0])
 
-    def disable_thrusters_srv(self,req):
+    def disable_thrusters(self,req):
         """ Disable thruster service """
         self.thrusters_enabled = False
         rospy.loginfo("THRUSTERS DISABLED")
         return EmptyResponse()
     
 
-    def enable_thrusters_srv(self,req):
+    def enable_thrusters(self,req):
         """ Enable thruster service """
         self.thrusters_enabled = True
         rospy.loginfo("THRUSTERS ENABLED")
