@@ -24,8 +24,8 @@ class Control:
         self.navsts_init = False
         self.atx_init = False
         self.gps_init = False
-        self.gps_min_time = rospy.Time(2)
-        self.init_time = rospy.Time().now()
+        self.gps_min_time = 2.0
+        self.init_time = rospy.Time().now().to_sec()
 
         self.origin_latitude = rospy.get_param("navigator/ned_origin_lat")
         self.origin_longitude = rospy.get_param("navigator/ned_origin_lon")
@@ -65,9 +65,10 @@ class Control:
         self.imu_pub.publish(data_imu)
 
     def control_gps(self, data_gps):
-        if rospy.Time().now() - self.init_time < self.gps_min_time:
+	uptime = rospy.Time.now().to_sec() - self.init_time
+        if uptime < self.gps_min_time:
             rospy.loginfo_throttle(1, 'Wait GPS to converge. Getting samples.')
-            break
+            return
 
 
         llh = [data_gps.latitude, data_gps.longitude, data_gps.altitude]
@@ -76,9 +77,9 @@ class Control:
         msg = PoseWithCovarianceStamped();
         msg.header = data_gps.header
         msg.header.frame_id = 'map'
-        msg.pose.pose.position.x = ned[1]
-        msg.pose.pose.position.y = ned[0]
-        msg.pose.pose.position.z = ned[2]
+        msg.pose.pose.position.x = ned[0]
+        msg.pose.pose.position.y = ned[1]
+        msg.pose.pose.position.z = 0.0
         msg.pose.pose.orientation.w = 1.0
         msg.pose.covariance[0] = data_gps.position_covariance[0]
         msg.pose.covariance[7] = data_gps.position_covariance[4]
