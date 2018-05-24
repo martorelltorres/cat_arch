@@ -162,15 +162,15 @@ class SafetyManager(object):
     #                                               wait_time = 60.0)
     self.communication_timeout_monitor = TimeoutMonitor('JoyTimeoutMonitor',
                                                 timeout = self.communication_timeout,
-                                                on_timeout = self.recoverer.disable_thrusters,
+                                                on_timeout = self.disable_thrusters,
                                                 wait_time = 120.0)
     self.gps_timeout_monitor = TimeoutMonitor('GpsTimeoutMonitor',
                                                 timeout = self.communication_timeout,
-                                                on_timeout = self.recoverer.disable_thrusters,
+                                                on_timeout = self.disable_thrusters,
                                                 wait_time = 120.0)
     self.minimum_cell_voltage_monitor  = ValueMonitor('MinCellVoltage',
                                                       min_value = self.min_cell_voltage,
-                                                      on_min = self.recoverer.disable_thrusters)
+                                                      on_min = self.disable_thrusters)
     # self.global_timeout_monitor.setDiagnostics(self.diagnostic)
     # self.navigation_timeout_monitor.setDiagnostics(self.diagnostic)
     self.communication_timeout_monitor.setDiagnostics(self.diagnostic)
