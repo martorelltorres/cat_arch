@@ -50,9 +50,9 @@ class WaypointFollowerNode:
                                                         Empty,
                                                         self.disable_teleoperation)
         # Publishers
-        self.pub_thrusters_setpoints = rospy.Publisher('setpoints', Setpoints, queue_size = 2)
+        self.pub_thrusters_setpoints = rospy.Publisher('setpoints', Setpoints, queue_size = 1)
         self.turbot_pose_pub = rospy.Publisher("turbot/pose",PoseStamped,queue_size = 1)
-        self.markerPub = rospy.Publisher('robotMarker',Marker,queue_size=1)
+        self.markerPub = rospy.Publisher('robotMarker', Marker, queue_size=1)
 
         # Subscribers
         rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)                  #Turbot surface position
