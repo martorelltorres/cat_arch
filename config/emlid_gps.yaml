@@ -6,3 +6,6 @@ emlid_driver:
     timeout_counter: 0
     timeout_threshold: 5.0
     frame_id: 'map'
+    use_serial: True
+    SERIALPORT: '/dev/ttyACM0'
+    BAUDRATE: 57600
