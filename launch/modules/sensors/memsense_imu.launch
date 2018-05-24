@@ -14,28 +14,28 @@
         <param name="accel_bias_x" value="0.02" type="double" />
         <param name="accel_bias_y" value="0.0" type="double" />
         <param name="accel_bias_z" value="0.0" type="double" />
-        <param name="accels_var"   value="0.0" type="double" />
+        <param name="accels_var"   value="0.05" type="double" />
 
         <param name="gyros_range"  value="2.617993877991494" type="double" />
         <param name="gyro_bias_x"  value=" 0.009295" type="double" />
         <param name="gyro_bias_y"  value=" 0.017145" type="double" />
         <param name="gyro_bias_z"  value="-0.002915" type="double" />
-        <param name="gyros_var"    value="0.0" type="double" />
+        <param name="gyros_var"    value="0.1" type="double" />
 
-        <param name="mag_bias_x"   value="0.0" type="double" />
-        <param name="mag_bias_y"   value="0.0" type="double" />
+        <param name="mag_bias_x"   value="-0.25" type="double" />
+        <param name="mag_bias_y"   value="0.15" type="double" />
         <param name="mag_bias_z"   value="0.0" type="double" />
         <param name="mags_range"   value="1.8999999999999999" type="double" />
-        <param name="mags_var"     value="0.0" type="double" />
+        <param name="mags_var"     value="0.05" type="double" />
 
         <remap from="imu/data" to="sensors/imu_raw_driver"/>
         <remap from="imu/data_calibrated" to="sensors/imu_raw_calibrated"/>
         <remap from="imu/data_filtered" to="sensors/imu_raw_filtered"/>
         <remap from="imu/data_filtered_calibrated" to="sensors/imu_raw_filtered_calibrated"/>
-        <remap from="imu/mag" to="sensors/imu_mag"/>
+        <remap from="imu/mag" to="sensors/imu_mag_raw"/>
         <remap from="imu/mag_calibrated" to="sensors/imu_mag_calibrated"/>
         <remap from="imu/mag_filtered" to="sensors/imu_mag_filtered"/>
-        <remap from="imu/mag_filtered_calibrated" to="sensors/imu_mag_filtered_calibrated"/>
+        <remap from="imu/mag_filtered_calibrated" to="sensors/imu_mag"/>
       </node>
 
       <!-- IMU FILTER MADGWICK NODE -->
