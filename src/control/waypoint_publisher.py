@@ -24,6 +24,7 @@ class WaypointPublisher:
     self.started = False
 
     self.waypoint_pub = rospy.Publisher("/navigation/nav_sts", NavSts,queue_size=1)
+    self.waypoint_pub2 = rospy.Publisher("/navigation/nav_sts_pose", PoseStamped,queue_size=1)
     rospy.Subscriber("/xiroi/odometry/filtered_map", Odometry, self.current_pose_callback)     #Current position and orientation
     rospy.Timer(rospy.Duration(0.5), self.update)
     rospy.spin()
@@ -44,7 +45,7 @@ class WaypointPublisher:
     error = sqrt(error_x*error_x+error_y*error_y)
     if error < self.waypoint_tolerance:
       if self.current < len(self.waypoints_x) - 1:
-        print('Waypoint ' + str(self.current) + ' achieved!')
+        print('Waypoint ' + str(self.current + 1) + ' achieved!')
         self.current = self.current + 1
         self.current_waypoint = [self.waypoints_x[self.current], self.waypoints_y[self.current]]
       else:
@@ -65,6 +66,12 @@ class WaypointPublisher:
     self.nav_sts.orientation.pitch = 0.0
     self.nav_sts.orientation.yaw = 0.0
     self.waypoint_pub.publish(self.nav_sts)
+    self.nav_sts_p = PoseStamped()
+    self.nav_sts_p.header = self.nav_sts.header
+    self.nav_sts_p.header.frame_id = 'map'
+    self.nav_sts_p.pose.position.x = self.current_waypoint[0]
+    self.nav_sts_p.pose.position.y = self.current_waypoint[1]
+    self.waypoint_pub2.publish(self.nav_sts_p)
 
 if __name__ == '__main__':
   try:
