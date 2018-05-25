@@ -5,12 +5,7 @@ master_sync/ignore_nodes: [/rosout,
                            /robot_state_publisher_robot]
 
 master_sync/sync_topics: [/navigation/nav_sts,
-                          /xiroi/navigation/nav_sts,
                           /xiroi/joy,
-                          /xiroi/odometry/filtered_map,
-                          /xiroi/odometry/filtered_odom,
-                          /xiroi/sensors/gps,
-                          /xiroi/setpoints,
                           /xiroi/control/ack_ack,
                           /xiroi/control/ack_joy]
 

@@ -94,7 +94,6 @@ class Control:
 
     def control_navsts(self, data_NavSts):
         self.navsts_init=True
-        print "navsts on"
 
 
     def init_system(self):

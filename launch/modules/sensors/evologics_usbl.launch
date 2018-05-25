@@ -11,8 +11,8 @@
 
   <!-- USBL POSITION -->
   <node pkg="usbl_position" name="usbl_position" type="usbl_position" output="screen">
-    <remap from="/usbl_position/modem_delayed" to="sensors/modem_delayed"/>
-    <remap from="/sensors/buoy" to="sensors/gps"/>
+    <remap from="usbl_position/modem_delayed" to="/sensors/modem_delayed"/>
+    <remap from="/sensors/buoy" to="sensors/gps_raw"/>
   </node>
 
 </launch>

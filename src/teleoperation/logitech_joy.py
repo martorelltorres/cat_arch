@@ -22,59 +22,6 @@ class LogitechFX10(JoystickBase):
         """Class Constructor."""
         JoystickBase.__init__(self, name)
 
-        # ... enable thrusters
-        rospy.wait_for_service(
-            'control/enable_thrusters', 10)
-        try:
-            self.enable_thrusters = rospy.ServiceProxy(
-                'control/enable_thrusters', Empty)
-        except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
-
-        # ... disable thrusters
-        rospy.wait_for_service(
-            'control/disable_thrusters', 10)
-        try:
-            self.disable_thrusters = rospy.ServiceProxy(
-                'control/disable_thrusters', Empty)
-        except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
-
-        # ... enable keep position
-        rospy.wait_for_service(
-            'control/enable_keep_position', 10)
-        try:
-            self.enable_keep_position = rospy.ServiceProxy(
-                'control/enable_keep_position', Empty)
-        except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
-
-         # ... disable keep position
-        rospy.wait_for_service(
-            'control/disable_keep_position', 10)
-        try:
-            self.disable_keep_position = rospy.ServiceProxy(
-                'control/disable_keep_position', Empty)
-        except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
-
-        # ... enable teleoperation
-        rospy.wait_for_service(
-            'control/enable_teleoperation', 10)
-        try:
-            self.enable_teleoperation = rospy.ServiceProxy(
-                'control/enable_teleoperation', Empty)
-        except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
-        # ... disable teleoperation
-        rospy.wait_for_service(
-            'control/disable_teleoperation', 10)
-        try:
-            self.disable_teleoperation = rospy.ServiceProxy(
-                'control/disable_teleoperation', Empty)
-        except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
-
 
     def update_joy(self, joy):
         """Receive joy raw data."""
@@ -116,25 +63,67 @@ class LogitechFX10(JoystickBase):
 
         # Enable/disable thrusters
         if joy.axes[LEFT_TRIGGER] < -0.9 and joy.axes[RIGHT_TRIGGER] < -0.9:
-            self.disable_thrusters()
+            rospy.wait_for_service(
+                'control/disable_thrusters', 10)
+            try:
+                self.disable_thrusters = rospy.ServiceProxy(
+                    'control/disable_thrusters', Empty)
+                self.disable_thrusters()
+            except rospy.ServiceException, e:
+                rospy.logwarn("%s: Service call failed: %s", self.name, e)
             rospy.sleep(1.0)
 
         if joy.buttons[BUTTON_LEFT] == 1.0 and joy.buttons[BUTTON_RIGHT] == 1.0:
-            self.enable_thrusters()
+            rospy.wait_for_service(
+                'control/enable_thrusters', 10)
+            try:
+                self.enable_thrusters = rospy.ServiceProxy(
+                    'control/enable_thrusters', Empty)
+                self.enable_thrusters()
+            except rospy.ServiceException, e:
+                rospy.logwarn("%s: Service call failed: %s", self.name, e)
 
         # Enable/disable keep position
         if joy.buttons[BUTTON_START] == 1.0:
-            self.enable_keep_position()
+            rospy.wait_for_service(
+                        'control/enable_keep_position', 10)
+            try:
+                self.enable_keep_position = rospy.ServiceProxy(
+                    'control/enable_keep_position', Empty)
+                self.enable_keep_position()
+            except rospy.ServiceException, e:
+                rospy.logwarn("%s: Service call failed: %s", self.name, e)
 
         if joy.buttons[BUTTON_BACK] == 1.0:
-            self.disable_keep_position()
+            rospy.wait_for_service(
+                'control/disable_keep_position', 10)
+            try:
+                self.disable_keep_position = rospy.ServiceProxy(
+                    'control/disable_keep_position', Empty)
+                self.disable_keep_position()
+            except rospy.ServiceException, e:
+            rospy.logwarn("%s: Service call failed: %s", self.name, e)
 
         #Enable/disable teleoperation
         if joy.buttons[BUTTON_A] == 1.0:
-            self.enable_teleoperation()
+            rospy.wait_for_service(
+                        'control/enable_teleoperation', 10)
+            try:
+                self.enable_teleoperation = rospy.ServiceProxy(
+                    'control/enable_teleoperation', Empty)
+                self.enable_teleoperation()
+            except rospy.ServiceException, e:
+                rospy.logwarn("%s: Service call failed: %s", self.name, e)
 
         if joy.buttons[BUTTON_Y] == 1.0:
-            self.disable_teleoperation()
+            rospy.wait_for_service(
+                        'control/disable_teleoperation', 10)
+            try:
+                self.disable_teleoperation = rospy.ServiceProxy(
+                    'control/disable_teleoperation', Empty)
+                self.disable_teleoperation()
+            except rospy.ServiceException, e:
+                rospy.logwarn("%s: Service call failed: %s", self.name, e)
 
 if __name__ == '__main__':
     """ Initialize the logitech_fx10 node. """
