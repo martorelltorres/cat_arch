@@ -1,6 +1,25 @@
 <launch>
   <arg name="namespace_arg" default="/xiroi" />
 
+  <!-- OPERATIONAL FLAGS -->
+  <arg name="joystickDevice"      default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_2F85961A-joystick"/>
+  <arg name="enableJoystick"      default="true"/>
+  <arg name="enableModem"         default="false"/>
+  <arg name="enableTeleoperation" default="true"/>
+
+  <!-- NED ORIGIN -->
+  <arg name="place" default="punta_negra.yaml"/>
+  <arg name="placesDir" default="$(find turbot)/config/places"/>
+  <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
+
+  <!-- VEHICLE FRAMES -->
+  <rosparam command="load" file="$(find turbot)/config/frames.yaml"/>
+
+  <!-- VEHICLE STATIC TFs -->
+  <include file="$(find turbot)/launch/modules/transforms.launch">
+    <arg name="suffix" value="_gs"/>
+  </include>
+
   <!-- ROSBRIDGE -->
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
   <node name="mjpeg_server" pkg="mjpeg_server" type="mjpeg_server"/>
@@ -13,8 +32,19 @@
   <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_groundstation_topics.yaml"/>
   <node name="master_sync" pkg="master_sync_fkie" type="master_sync" output="screen"/>
 
+  <!-- TRAJECTORY -->
+  <node pkg="utils" type="trajectory_sender.py" name="trajectory_sender" respawn="true" />
 
-  <!--TELEOPERATION-->
+  <!-- ACOUSTIC USBL -->
+  <group if="$(arg enableModem)">
+    <include file="$(find turbot)/launch/modules/acoustic_usbl.launch"/>
+  </group>
+
+  <!-- BAGFILES -->
+  <rosparam command="load" file="$(find turbot)/config/topic_logger/topic_logger_groundstation.yaml"/>
+  <node name="topic_logger_gs" pkg="utils" type="topic_logger.py" respawn="true" output="screen"/>
+
+  <!--TELEOPERATION XIROI-->
   <group ns="$(arg namespace_arg)">
     <include file="$(find xiroi)/launch/modules/teleoperation.launch">
       <arg name="isASC" value="false"/>
@@ -24,4 +54,11 @@
       <arg name="suffix" value="gs"/>
     </include>
   </group>
+
+  <!-- TELEOPERATION TURBOT-->
+  <include if="$(arg enableTeleoperation)" file="$(find turbot)/launch/modules/teleoperation.launch" >
+    <arg name="enableJoystick" value="$(arg enableJoystick)"/>
+    <arg name="joystickDevice" value="$(arg joystickDevice)"/>
+    <arg name="isAUV" value="false"/>
+  </include>
 </launch>
