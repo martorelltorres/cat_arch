@@ -102,7 +102,7 @@ class LogitechFX10(JoystickBase):
                     'control/disable_keep_position', Empty)
                 self.disable_keep_position()
             except rospy.ServiceException, e:
-            rospy.logwarn("%s: Service call failed: %s", self.name, e)
+                rospy.logwarn("%s: Service call failed: %s", self.name, e)
 
         #Enable/disable teleoperation
         if joy.buttons[BUTTON_A] == 1.0:
