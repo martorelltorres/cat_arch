@@ -46,7 +46,7 @@ class ArduinoROS():
         self.position_lights_pin = rospy.get_param("~position_ligts_pin", 11)
         self.strobe_light_pin = rospy.get_param("~strobe_light_pin", 10)
         self.enable_lights_pin = rospy.get_param("enable_lights_pin",9)
-	self.current_sensor_power_pin = rospy.get_param("~current_sensor_power_pin", 3)
+    	self.current_sensor_power_pin = rospy.get_param("~current_sensor_power_pin", 3)
         self.first_time=True;
 
         #Slew rate parameters
@@ -64,7 +64,7 @@ class ArduinoROS():
         self.thruster_current = rospy.Publisher("thruster_current",Current, queue_size=1)
 
         # Callback for BatteryInfo
-        rospy.Subscriber("/sensors/battery", PowerReading, self.battery_info)
+        rospy.Subscriber("sensors/battery", PowerReading, self.battery_info)
 	self.soc = 0
 
         #Services
@@ -125,12 +125,12 @@ class ArduinoROS():
         return EmptyResponse()
 
     def enable_strobe_light_srv(self, req):
-	self.controller.digital_write(self.strobe_light_pin,1)
-	return EmptyResponse()
+	  self.controller.digital_write(self.strobe_light_pin,1)
+	  return EmptyResponse()
 
     def disable_strobe_light_srv(self, req):
-	self.controller.digital_write(self.strobe_light_pin,0)
-	return EmptyResponse()
+	  self.controller.digital_write(self.strobe_light_pin,0)
+	  return EmptyResponse()
 	
     def limitSetpoint(self, msg, time, old_msg, old_time):
         #Rate calculation
@@ -203,7 +203,7 @@ class ArduinoROS():
         self.soc = data.input_soc
     
     def strobe_led(self):
-        #print(self.soc)
+       # print(self.soc)
         if 100.0 >= self.soc and self.soc >= 75.0:
             time.sleep(2.5)
             for i in range(4):
@@ -216,7 +216,7 @@ class ArduinoROS():
             time.sleep(2.9)
             for i in range(3):
                 self.controller.digital_write(self.strobe_light_pin, 1)
-		time.sleep(0.2)
+	        time.sleep(0.2)
                 self.controller.digital_write(self.strobe_light_pin, 0)
                 time.sleep(0.2)
                 
@@ -224,17 +224,17 @@ class ArduinoROS():
             time.sleep(3.3)
             for i in range(2):
                 self.controller.digital_write(self.strobe_light_pin, 1)
-		time.sleep(0.2)
+	        time.sleep(0.2)
                 self.controller.digital_write(self.strobe_light_pin, 0)
-		time.sleep(0.2)
+	        time.sleep(0.2)
 
         elif 25.0 > self.soc and self.soc >= 0.0:
             time.sleep(3.7)
             for i in range(1):
                 self.controller.digital_write(self.strobe_light_pin, 1)
-		time.sleep(0.2)
+	        time.sleep(0.2)
                 self.controller.digital_write(self.strobe_light_pin, 0)
-		time.sleep(0.2)
+	        time.sleep(0.2)
 
     def shutdown(self):
         rospy.loginfo("Shutting down Arduino Node...")
