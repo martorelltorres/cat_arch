@@ -1,6 +1,9 @@
 <launch>
-  <arg name="namespace_arg" default="/xiroi" />
-  <arg name="simulation" default="false" />
+  <arg name="namespace_arg"       default="/xiroi" />
+  <arg name="simulation"          default="false" />
+  <arg name="enableUSBL"          default="true"/>
+  <arg name="enableThrusters"     default="true"/>
+  <arg name="enableTeleoperation" default="true"/>
 
 
   <!-- PLACE -->
@@ -22,13 +25,14 @@
     <!--sudo chmod a+rw /dev/bus/usb/001/003-->
     <include file="$(find xiroi)/launch/modules/sensors.launch">
       <arg name="simulation" value="$(arg simulation)"/>
+      <arg name="enableUSBL" value="$(arg enableUSBL)"/>
     </include>
 
     <!--THRUSTERS-->
-    <include unless="$(arg simulation)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
+    <include if="$(arg enableUSBL)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
 
     <!--TELEOPERATION-->
-    <include file="$(find xiroi)/launch/modules/teleoperation.launch">
+    <include if="$(arg enableTeleoperation)" file="$(find xiroi)/launch/modules/teleoperation.launch">
       <arg name="isGS" value="$(arg simulation)"/>
     </include>
 
