@@ -5,7 +5,8 @@
   <arg name="joystickDevice"      default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_2F85961A-joystick"/>
   <arg name="enableJoystick"      default="true"/>
   <arg name="enableModem"         default="false"/>
-  <arg name="enableTeleoperation" default="true"/>
+  <arg name="enableTurbotTeleop"  default="true"/>
+  <arg name="enableXiroiTeleop"   default="true"/>
 
   <!-- NED ORIGIN -->
   <arg name="place" default="punta_negra.yaml"/>
@@ -46,17 +47,16 @@
 
   <!--TELEOPERATION XIROI-->
   <group ns="$(arg namespace_arg)">
-    <include file="$(find xiroi)/launch/modules/teleoperation.launch">
+    <include if="$(arg enableXiroiTeleop)" file="$(find xiroi)/launch/modules/teleoperation.launch">
       <arg name="isASC" value="false"/>
     </include>
-
     <include file="$(find xiroi)/launch/modules/transforms.launch">
       <arg name="suffix" value="gs"/>
     </include>
   </group>
 
   <!-- TELEOPERATION TURBOT-->
-  <include if="$(arg enableTeleoperation)" file="$(find turbot)/launch/modules/teleoperation.launch" >
+  <include if="$(arg enableTurbotTeleop)" file="$(find turbot)/launch/modules/teleoperation.launch" >
     <arg name="enableJoystick" value="$(arg enableJoystick)"/>
     <arg name="joystickDevice" value="$(arg joystickDevice)"/>
     <arg name="isAUV" value="false"/>
