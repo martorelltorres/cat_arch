@@ -52,6 +52,7 @@ master_sync/sync_topics: [/control/thrusters_data,
                           /xiroi/odometry/filtered_odom,
                           /xiroi/sensors/gps,
                           /xiroi/setpoints,
+                          /xiroi/control/ack,
                           /xiroi/control/ack_ack,
                           /xiroi/control/ack_joy]
                           # /xiroi/safety]
