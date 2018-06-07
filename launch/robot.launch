@@ -15,11 +15,10 @@
     <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
 
     <!--DYNAMICS -->
-    <include file="$(find xiroi)/launch/modules/dynamics.launch"/>
+    <include if="$(arg simulation)" file="$(find xiroi)/launch/modules/dynamics.launch"/>
 
     <!--CONTROL-->
     <include file="$(find xiroi)/launch/modules/control.launch"/>
-
     <!--SENSORS-->
     <!--sudo nano /etc/rc.local-->
     <!--sudo chmod a+rw /dev/bus/usb/001/003-->
