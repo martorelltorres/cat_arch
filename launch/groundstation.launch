@@ -5,7 +5,7 @@
   <arg name="joystickDevice"      default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_2F85961A-joystick"/>
   <arg name="enableJoystick"      default="true"/>
   <arg name="enableModem"         default="false"/>
-  <arg name="enableTurbotTeleop"  default="true"/>
+  <arg name="enableTurbotTeleop"  default="false"/>
   <arg name="enableXiroiTeleop"   default="true"/>
 
   <!-- NED ORIGIN -->
@@ -14,7 +14,7 @@
   <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
 
   <!-- VEHICLE FRAMES -->
-  <rosparam command="load" file="$(find turbot)/config/frames.yaml"/>
+  <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
 
   <!-- VEHICLE STATIC TFs -->
   <include file="$(find turbot)/launch/modules/transforms.launch">
