@@ -9,7 +9,7 @@
   <arg name="enableXiroiTeleop"   default="true"/>
 
   <!-- NED ORIGIN -->
-  <arg name="place" default="punta_negra.yaml"/>
+  <arg name="place" default="emissari.yaml"/>
   <arg name="placesDir" default="$(find turbot)/config/places"/>
   <rosparam command="load" file="$(arg placesDir)/$(arg place)"/>
 
@@ -55,7 +55,7 @@
     </include>
   </group>
 
-  <!-- TELEOPERATION TURBOT-->
+  <!-- TELEOPERATION XIROI-->
   <include if="$(arg enableTurbotTeleop)" file="$(find turbot)/launch/modules/teleoperation.launch" >
     <arg name="enableJoystick" value="$(arg enableJoystick)"/>
     <arg name="joystickDevice" value="$(arg joystickDevice)"/>

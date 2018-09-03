@@ -1,0 +1,21 @@
+<launch>
+
+  <!-- Load params -->
+  <arg name="enableTeleoperation" default="false"/>
+  <rosparam command="load" file="$(find xiroi)/config/mission.yaml" />
+  <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
+  <rosparam command="load" file="$(find xiroi)/config/robot_dynamics.yaml" />
+
+  <!-- <node name="control" pkg="xiroi" type="control.py" respawn="false" output="screen"/> -->
+  <node name="follower" pkg="xiroi" type="follower.py" respawn="false" output="screen"/>
+  <node name="waypoint_publisher" pkg="xiroi" type="waypoint_mission_pub.py" respawn="false" output="screen"/>
+  <!-- <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/> -->
+
+  <!-- Simulated dynamics -->
+  <node name="robot_dynamics" pkg="xiroi" type="robot_dynamics.py" respawn="false" output="screen">
+  	<remap from="xiroi/odom_dynamics" to="xiroi/odometry/filtered_map"/>
+  	<remap from="setpoints" to="dynamics/xiroi/thruster_topic"/>
+  	<!-- <remap from="thrusters_setpoints" to="setpoints"/> -->
+  </node>	
+ 
+</launch>

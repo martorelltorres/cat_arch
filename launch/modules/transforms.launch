@@ -11,5 +11,6 @@
   <node pkg="tf" type="static_transform_publisher" name="stereo_to_left$(arg suffix)" args="-0.06 0.0 0.0 0.0 0.0 0.0 /stereo_down /stereo_down/left_optical 100" />
   <node pkg="tf" type="static_transform_publisher" name="xiroi_to_stereo_stick$(arg suffix)" args="0.4 0.0 0.8 0.0 0.0 0.0 /xiroi /stereo_stick 100" />
   <node pkg="tf" type="static_transform_publisher" name="stereo_stick_to_stereo_base$(arg suffix)" args="0.0 0.0 0.0 1.57 0.0 1.57 /stereo_stick /stereo_down/base 100" />
-  <node pkg="tf" type="static_transform_publisher" name="stereo_base_to_stereo$(arg suffix)" args="0.0 0.0 0.0 0.0 0.0 -0.785 /stereo_down/base /stereo_down 100" />
+  <!--node pkg="tf" type="static_transform_publisher" name="stereo_base_to_stereo$(arg suffix)" args="0.0 0.0 0.0 0.0 0.0 -0.785 /stereo_down/base /stereo_down 100" /-->
+  <node pkg="tf" type="static_transform_publisher" name="stereo_base_to_stereo$(arg suffix)" args="0.0 0.0 0.0 0.0 0.0 -1.57 /stereo_down/base /stereo_down 100" />
 </launch>

@@ -1,8 +1,9 @@
 <launch>
   <arg name="namespace_arg"       default="/xiroi" />
-  <arg name="simulation"          default="false" />
+  <arg name="simulation"          default="true" />
   <arg name="enableUSBL"          default="false"/>
-  <arg name="enableThrusters"     default="true"/>
+  <arg name="enableMission"       default="false"/>
+  <arg name="enableThrusters"     default="false"/>
   <arg name="enableTeleoperation" default="true"/>
 
 
@@ -14,11 +15,32 @@
     <!-- VEHICLE FRAMES -->
     <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
 
-    <!--DYNAMICS -->
+    <!-- DYNAMICS -->
     <include if="$(arg simulation)" file="$(find xiroi)/launch/modules/dynamics.launch"/>
 
-    <!--CONTROL-->
-    <include file="$(find xiroi)/launch/modules/control.launch"/>
+    <!-- LOCALIZATION -->
+    <rosparam command="load" file="$(find xiroi)/config/robot_localization.yaml" />
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
+      <remap from="odometry/filtered" to="odometry/filtered_map"/>
+      <remap from="odometry/path" to="odometry/filtered_map/path"/>
+    </node>
+
+    <!-- PILOT -->
+    <node name="device_monitor" pkg="xiroi" type="device_monitor.py" respawn="false" output="screen"/>
+    <node name="follower" pkg="xiroi" type="follower.py" respawn="false" output="screen">
+      <remap from="/goal" to="/navigation/nav_sts"/>
+      <remap from="/goal" to="/navigation/nav_sts_acoustic"/>
+    </node>
+
+    <!-- MISSION -->
+    <group if="$(arg enableMission)">
+      <rosparam command="load" file="$(find xiroi)/config/mission.yaml" />
+      <node name= "waypoint_mission_pub" pkg="xiroi" type="waypoint_mission_pub.py" respawn="false" output="screen">
+        <remap from="/goal" to="/navigation/nav_sts"/>
+      </node>
+      <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/>
+    </group>
+
     <!--SENSORS-->
     <!--sudo nano /etc/rc.local-->
     <!--sudo chmod a+rw /dev/bus/usb/001/003-->

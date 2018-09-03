@@ -8,5 +8,5 @@ left_thruster_pin: 1
 right_thruster_pin: 0
 #Thrusters controller
 rising_rate: 0.1
-falling_rate: 1
-setpoint_limit: 0.5
+falling_rate: 0.5 #1
+setpoint_limit: 0.8

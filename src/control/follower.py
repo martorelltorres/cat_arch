@@ -49,15 +49,15 @@ class WaypointFollowerNode:
         self.disable_teleoperation_srv = rospy.Service('control/disable_teleoperation',
                                                         Empty,
                                                         self.disable_teleoperation)
+                                                        
         # Publishers
-        self.pub_thrusters_setpoints = rospy.Publisher('setpoints', Setpoints, queue_size = 1)
-        self.turbot_pose_pub = rospy.Publisher("turbot/pose",PoseStamped,queue_size = 1)
-        self.markerPub = rospy.Publisher('robotMarker', Marker, queue_size=1)
+        self.thrusters_setpoints_pub = rospy.Publisher('setpoints', Setpoints, queue_size = 1)
+        self.goal_pub = rospy.Publisher("/goal_position",PoseStamped,queue_size = 1)
+        self.marker_pub = rospy.Publisher('robotMarker', Marker, queue_size=1)
 
         # Subscribers
-        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)                  #Turbot surface position
-        rospy.Subscriber("/navigation/nav_sts", NavSts, self.waypoint_callback)           #Turbot surface position
-        rospy.Subscriber("/navigation/nav_sts_acoustic", NavSts, self.waypoint_callback)  #Turbot underwater position
+        rospy.Subscriber("setpoints_req", Setpoints, self.setpoints_req)                  
+        rospy.Subscriber("/goal", NavSts, self.waypoint_callback)                         #Goal
         rospy.Subscriber("odometry/filtered_map",Odometry,self.current_pose_callback)     #Current position and orientation
         rospy.Timer(rospy.Duration(0.1), self.setpoint_timer)
 
@@ -90,16 +90,16 @@ class WaypointFollowerNode:
         self.robotMarker.color.g = 0.0
         self.robotMarker.color.b = 0.0
         self.robotMarker.color.a = 0.3
-        self.markerPub.publish(self.robotMarker)
+        self.marker_pub.publish(self.robotMarker)
 
-        self.turbot_pose_pub.publish(self.waypoint)
+        self.goal_pub.publish(self.waypoint)
 
     def setpoint_timer(self, event):
-	if self.teleoperation_enabled:
-	    time_now = rospy.Time.now()
+    	if self.teleoperation_enabled:
+    	    time_now = rospy.Time.now()
             if time_now - self.setpoints.header.stamp > self.setpoint_timeout:
-		self.setpoints.setpoints = np.array([0.0, 0.0])
-            self.pub_thrusters_setpoints.publish(self.setpoints)
+    		  self.setpoints.setpoints = np.array([0.0, 0.0])
+            self.thrusters_setpoints_pub.publish(self.setpoints)
 
     def setpoints_req(self, msg):
         if self.teleoperation_enabled:
@@ -113,8 +113,6 @@ class WaypointFollowerNode:
         self.waypoint.pose.position.z = msg.position.depth
         self.waypoint.pose.orientation = Quaternion(*tf.transformations.quaternion_from_euler(msg.orientation.roll, msg.orientation.pitch, msg.orientation.yaw))
 
-
-
     def current_pose_callback(self, msg):
         self.current.header.stamp = rospy.Time.now()
         self.current.pose.position.x = msg.pose.pose.position.x
@@ -125,9 +123,9 @@ class WaypointFollowerNode:
         # Compute thruster setpoints
         self.thruster_setpoints = self.follower.update_thrusters(self.current, self.waypoint)
         self.draw_marker()
-
+        self.teleoperation_enabled=False
         if not self.teleoperation_enabled:
-            self.pub_thrusters_setpoints.publish(self.thruster_setpoints)
+            self.thrusters_setpoints_pub.publish(self.thruster_setpoints)
 
 
     def enable_keep_position(self, req):

@@ -5,7 +5,7 @@ dynamics/xiroi/number_of_thrusters: 2
 dynamics/xiroi/thrusters_topic: "thrusters_setpoints"
 
 dynamics/xiroi/period: 0.05
-dynamics/xiroi/mass: 34.5
+dynamics/xiroi/mass: 45.5
 dynamics/xiroi/gravity_center: [0.0, 0.0, 0.01]
 dynamics/xiroi/g: 9.81
 dynamics/xiroi/radius: 0.2009312118

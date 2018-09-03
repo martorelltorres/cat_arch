@@ -15,7 +15,7 @@ import tf
 import numpy as np
 import rosparam
 
-class Control:
+class Monitor:
     def __init__(self):
         # Initialize some parameters
         self.init_soc_threshold = 20
@@ -38,14 +38,14 @@ class Control:
 
 
         # Subscribers
-        rospy.Subscriber("sensors/battery", PowerReading, self.control_battery)
-        rospy.Subscriber("sensors/imu_raw", Imu, self.control_imu)
-        rospy.Subscriber("sensors/gps_raw", NavSatFix, self.control_gps)
-        rospy.Subscriber("/navigation/nav_sts", NavSts, self.control_navsts)
-        # rospy.Subscriber("joy", Joy, self.control_joy, queue_size = 4)
+        rospy.Subscriber("sensors/battery", PowerReading, self.monitor_battery)
+        rospy.Subscriber("sensors/imu_raw", Imu, self.monitor_imu)
+        rospy.Subscriber("sensors/gps_raw", NavSatFix, self.monitor_gps)
+        rospy.Subscriber("/navigation/nav_sts", NavSts, self.monitor_navsts)
+        # rospy.Subscriber("joy", Joy, self.monitor_joy, queue_size = 4)
 
         
-    def control_battery(self,data):
+    def monitor_battery(self,data):
         state_of_charge = data.input_soc
 
         if(state_of_charge>self.init_soc_threshold):
@@ -53,18 +53,18 @@ class Control:
         else:
             print "Below SOC threshold: stopping thrusters"
 
-    def control_joy(self,joy):
+    def monitor_joy(self,joy):
         self.time= rospy.Time().now()
         self.message_time=joy.Header.header.stamp.secs
 
 
-    def control_imu(self,data_imu):
+    def monitor_imu(self,data_imu):
         if not self.imu_init:
             rospy.loginfo('IMU is ON')
             self.imu_init=True
         self.imu_pub.publish(data_imu)
 
-    def control_gps(self, data_gps):
+    def monitor_gps(self, data_gps):
 	uptime = rospy.Time.now().to_sec() - self.init_time
         if uptime < self.gps_min_time:
             rospy.loginfo_throttle(1, 'Wait GPS to converge. Getting samples.')
@@ -92,7 +92,7 @@ class Control:
 
         self.gps_pose_pub.publish(msg)
 
-    def control_navsts(self, data_NavSts):
+    def monitor_navsts(self, data_NavSts):
         self.navsts_init=True
 
 
@@ -104,6 +104,6 @@ class Control:
 
 if __name__ == '__main__':
 
-    rospy.init_node('Control')
-    Control()
+    rospy.init_node('device_monitor')
+    Monitor()
     rospy.spin()
