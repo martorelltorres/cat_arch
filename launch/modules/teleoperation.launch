@@ -1,8 +1,12 @@
 <launch>
   <arg name="isGS"            default="false"/>
   <arg name="isASC"           default="true"/>
-  <!--<arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>--> <!-- xiroi -->
-  <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_2F85961A-joystick"/> <!-- turbot -->
+  
+  <!-- Xiroi Joy -->
+  <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>
+  
+  <!-- Turbot Joy -->
+  <!-- <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_2F85961A-joystick"/> -->
   
   <!-- <arg name="joystickDevice"  default="/dev/input/js0"/>  --> 
 
