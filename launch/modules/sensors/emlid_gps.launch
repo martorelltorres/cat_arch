@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="simulateGps" default="true"/>
+  <arg name="simulateGps" default="false"/>
 
   <!-- GPS driver simulated or emlid -->
   <group if="$(arg simulateGps)">
