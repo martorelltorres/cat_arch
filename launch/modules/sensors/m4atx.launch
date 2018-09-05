@@ -5,5 +5,5 @@
   </node>
 </launch>
 
-<!-- if there are permissions problems with USB ATX ports run : sudo chmod a+rw /dev/bus/usb/001/003 
+<!-- if there are permissions problems with USB ATX ports run : sudo chmod a+rw /dev/bus/usb/001/003  or sudo chmod a+rw /dev/bus/usb/001/004
 to fix the problem being sure that Microchip Technology, Inc is BUS 001 DEV 003  -->
