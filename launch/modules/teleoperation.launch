@@ -1,8 +1,10 @@
 <launch>
-  <arg name="isGS"            default="true"/>
+  <arg name="isGS"            default="false"/>
   <arg name="isASC"           default="true"/>
-  <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>
-  <!-- <arg name="joystickDevice"  default="/dev/input/js0"/>  -->
+  <!--<arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_DA3D9191-joystick"/>--> <!-- xiroi -->
+  <arg name="joystickDevice"  default="/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_2F85961A-joystick"/> <!-- turbot -->
+  
+  <!-- <arg name="joystickDevice"  default="/dev/input/js0"/>  --> 
 
   <!-- TELEOPERATION -->
   <group if="$(arg isGS)">
