@@ -20,10 +20,9 @@ from WaypointFollower.WaypointFollower import WaypointFollower
 class WaypointFollowerNode:
     def __init__(self):
         self.follower = WaypointFollower()
-
-	self.setpoint_timeout = rospy.Duration(0.2)
-	self.setpoints = Setpoints()
-	self.setpoints.setpoints = np.array([0.0, 0.0])
+        self.setpoint_timeout = rospy.Duration(0.2)
+        self.setpoints = Setpoints()
+        self.setpoints.setpoints = np.array([0.0, 0.0])
         self.keep_position_enabled = False
         self.teleoperation_enabled = True
 
@@ -91,8 +90,8 @@ class WaypointFollowerNode:
         self.robotMarker.color.b = 0.0
         self.robotMarker.color.a = 0.3
         self.marker_pub.publish(self.robotMarker)
-
         self.goal_pub.publish(self.waypoint)
+
 
     def setpoint_timer(self, event):
     	if self.teleoperation_enabled:
@@ -101,9 +100,10 @@ class WaypointFollowerNode:
     		  self.setpoints.setpoints = np.array([0.0, 0.0])
             self.thrusters_setpoints_pub.publish(self.setpoints)
 
+
     def setpoints_req(self, msg):
         if self.teleoperation_enabled:
-	    self.setpoints = msg
+	        self.setpoints = msg
 
     def waypoint_callback(self, msg):
         # Convert from NED class to Pose class
@@ -123,7 +123,6 @@ class WaypointFollowerNode:
         # Compute thruster setpoints
         self.thruster_setpoints = self.follower.update_thrusters(self.current, self.waypoint)
         self.draw_marker()
-        self.teleoperation_enabled=False
         if not self.teleoperation_enabled:
             self.thrusters_setpoints_pub.publish(self.thruster_setpoints)
 
