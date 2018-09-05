@@ -1,9 +1,9 @@
 <launch>
   <arg name="namespace_arg"       default="/xiroi" />
-  <arg name="simulation"          default="true" />
+  <arg name="simulation"          default="false" />
   <arg name="enableUSBL"          default="false"/>
   <arg name="enableMission"       default="false"/>
-  <arg name="enableThrusters"     default="false"/>
+  <arg name="enableThrusters"     default="true"/>
   <arg name="enableTeleoperation" default="true"/>
 
 
@@ -50,7 +50,7 @@
     </include>
 
     <!--THRUSTERS-->
-    <include if="$(arg enableThrusters)" file="$(find xiroi)/launch/modules/bluerobotics_T200_arduino.launch"/>
+    <include if="$(arg enableThrusters)" file="$(find xiroi)/launch/modules/sensors/bluerobotics_T200_arduino.launch"/>
 
     <!--TELEOPERATION-->
     <include if="$(arg enableTeleoperation)" file="$(find xiroi)/launch/modules/teleoperation.launch">
