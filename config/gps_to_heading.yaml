@@ -1,0 +1,2 @@
+gps_timeout: 0.5
+gps_min_speed: 0.2
