@@ -17,7 +17,6 @@ import rosparam
 class NavStatus:
     def __init__(self):
         # Subscribers
-        rospy.Subscriber("/navigation/nav_sts", NavSts, self.nav_sts_cb)
         rospy.Subscriber("odometry/filtered_map",Odometry,self.odometry_cb)
 
         self.origin_latitude = rospy.get_param("navigator/ned_origin_lat")
@@ -28,11 +27,6 @@ class NavStatus:
         self.xiroi_pose_pub = rospy.Publisher('navigation/nav_sts',
                                              NavSts,
                                              queue_size = 2)
-
-    def nav_sts_cb(self, nav_sts):
-        self.origin_latitude = nav_sts.origin.latitude
-        self.origin_longitude = nav_sts.origin.longitude
-        self.ned = NED.NED(nav_sts.origin.latitude, nav_sts.origin.longitude, 0.0)
 
     def odometry_cb(self, odom):
         quaternion = (
