@@ -52,7 +52,7 @@ class ArduinoROS():
         #Slew rate parameters
         self.rising_rate = 0.3 #0.3
         self.falling_rate = 1.0 #1
-        self.setpoint_limit = 0.6 #1
+        self.setpoint_limit = 0.8 #1
 
         # Overall loop rate: should be faster than fastest sensor rate
         self.rate = int(rospy.get_param("~rate", 50))
@@ -204,7 +204,7 @@ class ArduinoROS():
     
     def strobe_led(self):
        # print(self.soc)
-        if 100.0 >= self.soc and self.soc >= 75.0:
+        if 150.0 >= self.soc and self.soc >= 75.0:
             time.sleep(2.5)
             for i in range(4):
                 self.controller.digital_write(self.strobe_light_pin, 1)
