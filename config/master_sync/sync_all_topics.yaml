@@ -47,7 +47,12 @@ master_sync/sync_topics: [/control/thrusters_data,
                           /xiroi/sensors/gps,
                           /xiroi/setpoints,
                           /xiroi/control/ack_ack,
-                          /xiroi/control/ack_joy]
+                          /xiroi/control/ack_joy,
+                          /stereo_down/scaled_x2/left/image_rect_color_th,
+                          /stereo_down/rscaled_x2/ight/image_rect_color_th,
+                          /stereo_down/scaled_x2/left/camera_info_th,
+                          /stereo_down/rscaled_x2/ight/camera_info_th]
+                          
 master_sync/sync_services: [/control/load_trajectory,
                             /control/enable_trajectory,
                             /control/disable_trajectory,
