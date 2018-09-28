@@ -1,0 +1,7 @@
+<launch>
+      <node name="nav_sat_pub_robot" pkg="xiroi" type="nav_sat_pub" respawn="true">
+        <param name="frame_id" value="gps_origin"/>
+        <param name="topic_name" value="/sensors/gps_raw"/>
+        <param name="use_ned_origin" value="true"/>
+      </node>
+</launch>

@@ -1,5 +1,6 @@
 <launch>
   <arg name="simulation" default="false"/>
+  <arg name="simGPS" default="false"/>
   <arg name="enableUSBL" default="true"/>
 
   <group unless="$(arg simulation)">
@@ -8,7 +9,8 @@
     <!--ATX Power Source-->
     <include file="$(find xiroi)/launch/modules/sensors/m4atx.launch"/>
     <!--EMLID GPS:publishes /sensors/gps (/sensors/gps_buoy_emlid_raw)-->
-    <include file="$(find xiroi)/launch/modules/sensors/emlid_gps.launch"/>
+    <include unless="$(arg simGPS)" file="$(find xiroi)/launch/modules/sensors/emlid_gps.launch"/>
+    <include if="$(arg simGPS)" file="$(find xiroi)/launch/modules/sensors/sim_gps.launch"/>
     <!--USBL: publishes acoustic topics (/navigation/nav_sts_acoustic)-->
     <include if="$(arg enableUSBL)" file="$(find xiroi)/launch/modules/sensors/evologics_usbl.launch"/>
   </group>

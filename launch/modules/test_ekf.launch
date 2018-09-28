@@ -1,0 +1,73 @@
+<launch>
+  <arg name="namespace_arg"       default="/xiroi" />
+  <arg name="dataset"    		  default="papallones1"/>
+
+  <!-- PLACE -->
+  <arg name="place" default="papallones.yaml"/>
+
+  <group ns="$(arg namespace_arg)">
+  	<!-- Raw data -->
+	  <include file="$(find xiroi)/config/data_loader/$(arg dataset).xml">
+	  </include>
+
+    <!-- VEHICLE FRAMES -->
+    <rosparam command="load" file="$(find xiroi)/config/xiroi_frames.yaml"/>
+
+    <!--TRANSFORMS-->
+    <include file="$(find xiroi)/launch/modules/transforms.launch">
+      <arg name="suffix" value="asc"/>
+    </include>
+
+    <!-- IMU FILTER MADGWICK NODE-->
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_node_mad" output="screen">
+      <param name="stateless" value="true"/>
+      <param name="fixed_frame" value="odom"/>
+      <param name="publish_tf" value="false"/>
+      <param name="constant_dt" value="0.0"/>
+      <param name="publish_debug_topics" value="false"/>
+      <param name="use_mag" value="true"/>
+      <param name="use_magnetic_field_msg" value="true"/>
+      <param name="world_frame" value="enu"/>
+
+      <remap from="imu/data_raw" to="sensors/imu_raw_driver"/> 
+      <remap from="imu/mag" to="sensors/imu_mag"/>        
+      <remap from="imu/data" to="sensors/imu"/> 
+    </node> 
+
+    <!-- IMU COMPLEMENTARY FILTER -->
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_node_comp" output="screen">
+      <param name="use_mag" value="true"/>
+      <param name="fixed_frame" value="odom"/>
+      <param name="publish_tf" value="false"/>
+      <param name="publish_debug_topics" value="tu"/>
+      <param name="constant_dt" value="0.0"/>
+
+      <remap from="imu/data_raw" to="sensors/imu_raw_driver"/>   
+      <remap from="imu/mag" to="sensors/imu_mag"/>         
+      <remap from="imu/data" to="sensors/imu_comp"/>   
+    </node>
+
+    <!-- LOCALIZATION MAD-->
+    <rosparam command="load" file="$(find xiroi)/config/robot_localization_with_imu.yaml" />
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map_mad" clear_params="true">
+      <remap from="odometry/filtered" to="odometry/filtered_map"/>
+      <remap from="odometry/path" to="odometry/filtered_map/path"/>
+    </node>
+
+
+    <node pkg="topic_tools" type="transform" name="transform_comp" 
+      args='/xiroi/sensors/imu_comp/orientation /euler_comp geometry_msgs/Vector3 tf.transformations.euler_from_quaternion([m.x,m.y,m.z,m.w]) --import tf'>
+    </node>
+    <node pkg="topic_tools" type="transform" name="transform_mad" 
+      args='/xiroi/sensors/imu/orientation /euler_mad geometry_msgs/Vector3 tf.transformations.euler_from_quaternion([m.x,m.y,m.z,m.w]) --import tf'>
+    </node>
+    <node pkg="topic_tools" type="transform" name="transform_ekf" 
+      args='/xiroi/odometry/filtered_map/pose/pose/orientation /euler_ekf geometry_msgs/Vector3 tf.transformations.euler_from_quaternion([m.x,m.y,m.z,m.w]) --import tf'>
+    </node>
+    <node pkg="topic_tools" type="transform" name="transform_ekf_old" 
+      args='/xiroi/odometry/filtered_map_old/pose/pose/orientation /euler_ekf_old geometry_msgs/Vector3 tf.transformations.euler_from_quaternion([m.x,m.y,m.z,m.w]) --import tf'>
+    </node>
+
+
+  </group>
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+    <!-- MULTIMASTER -->
+    <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" >
+      <param name="_mcast_group" value="224.0.0.1"/>
+    </node>
+    <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_xiroi.yaml"/>
+    <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_all_topics.yaml"/>
+    <node name="master_sync" pkg="master_sync_fkie" type="master_sync" output="screen"/>
+
+</launch>

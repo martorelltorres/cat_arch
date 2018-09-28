@@ -1,0 +1,14 @@
+<launch>
+
+  <group ns="xiroi">
+
+  <rosparam command="load" file="$(find xiroi)/config/gps_to_heading.yaml"/>
+
+  <node pkg="xiroi" type="gps_to_heading.py" name="gps_to_heading" output="screen">
+    <remap from="gps" to="/xiroi/sensors/gps_raw"/>
+    <remap from="imu" to="/xiroi/sensors/imu"/>
+    <remap from="odom" to="/xiroi/sensors/odom_from_gps"/>
+  </node>
+  </group>
+
+</launch>

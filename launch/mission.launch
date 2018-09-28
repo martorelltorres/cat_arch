@@ -1,0 +1,13 @@
+<launch>
+  <group ns="xiroi">
+    <rosparam command="load" file="$(find xiroi)/config/mission.yaml" />
+    <node name= "waypoint_mission_pub" pkg="xiroi" type="waypoint_mission_pub.py" respawn="false" output="screen">
+      <!--remap from="/goal" to="/navigation/nav_sts"/-->
+    </node>
+  </group>
+</launch>
+
+
+
+
+

@@ -1,14 +1,16 @@
 <launch>
   <arg name="namespace_arg"       default="/xiroi" />
   <arg name="simulation"          default="false" />
+  <arg name="simGPS"              default="false"/>
   <arg name="enableUSBL"          default="false"/>
   <arg name="enableMission"       default="false"/>
   <arg name="enableThrusters"     default="true"/>
   <arg name="enableTeleoperation" default="true"/>
+  <arg name="enableStereo"        default="false"/>
 
 
   <!-- PLACE -->
-  <arg name="place" default="rcd_mallorca.yaml"/>
+  <arg name="place" default="papallones.yaml"/>
 
   <group ns="$(arg namespace_arg)">
 
@@ -27,9 +29,10 @@
 
     <!-- PILOT -->
     <node name="device_monitor" pkg="xiroi" type="device_monitor.py" respawn="false" output="screen"/>
+    <rosparam command="load" file="$(find xiroi)/config/follower.yaml" />
     <node name="follower" pkg="xiroi" type="follower.py" respawn="false" output="screen">
-      <remap from="/goal" to="/navigation/nav_sts"/>
-      <remap from="/goal" to="/navigation/nav_sts_acoustic"/>
+      <!--remap from="/goal" to="/navigation/nav_sts_acoustic"/-->
+      <!--remap from="/goal" to="/navigation/nav_sts"/-->
     </node>
 
     <!-- MISSION -->
@@ -38,7 +41,6 @@
       <node name= "waypoint_mission_pub" pkg="xiroi" type="waypoint_mission_pub.py" respawn="false" output="screen">
         <remap from="/goal" to="/navigation/nav_sts"/>
       </node>
-      <node name="nav_status" pkg="xiroi" type="nav_status.py" respawn="false" output="screen"/>
     </group>
 
     <!--SENSORS-->
@@ -46,6 +48,7 @@
     <!--sudo chmod a+rw /dev/bus/usb/001/003-->
     <include file="$(find xiroi)/launch/modules/sensors.launch">
       <arg name="simulation" value="$(arg simulation)"/>
+      <arg name="simGPS" value="$(arg simGPS)"/>
       <arg name="enableUSBL" value="$(arg enableUSBL)"/>
     </include>
 
@@ -55,10 +58,14 @@
     <!--TELEOPERATION-->
     <include if="$(arg enableTeleoperation)" file="$(find xiroi)/launch/modules/teleoperation.launch">
       <arg name="isGS" value="$(arg simulation)"/>
+      <arg name="isASC" value="true"/>
     </include>
 
     <!--SAFETY-->
     <node pkg="xiroi" type="safety_node.py" name="safety_node" output="screen"/>
+    
+    <!--NAV STS-->
+    <node pkg="xiroi" type="nav_status.py" name="nav_status" output="screen"/>
 
     <!--TRANSFORMS-->
     <include file="$(find xiroi)/launch/modules/transforms.launch">
@@ -76,6 +83,10 @@
     <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_xiroi.yaml"/>
     <rosparam command="load" file="$(find xiroi)/config/master_sync/sync_all_topics.yaml"/>
     <node name="master_sync" pkg="master_sync_fkie" type="master_sync" output="screen"/>
+
+    <!-- STEREO
+    <include file="$(find xiroi)/launch/modules/cameras/stereo.launch">
+    </include> -->
 
   </group>
 </launch>

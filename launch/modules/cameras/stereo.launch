@@ -4,7 +4,8 @@
   <arg name="camera" default="BB2_08S2C_25_1" />
   <arg name="calibration" default="boxed_water" />
   <arg name="camera_params" default="$(find xiroi)/config/cameras/config/stereo_down_params.yaml" />
-  <arg name="processing" default="true"/>
+  <arg name="processing" default="false"/>
+  <arg name="decimate" default="false"/>
 
   <node pkg="camera1394stereo" type="camera1394stereo_node" name="stereo_down_node" output="screen" >
       <rosparam file="$(arg camera_params)" />
@@ -20,14 +21,19 @@
     </node>
   </group>
 
-  <include file="$(find xiroi)/launch/modules/stereo_crop_decimate.launch" >
+  <include if="$(arg decimate)" file="$(find xiroi)/launch/modules/cameras/stereo_crop_decimate.launch" >
       <arg name="stereo" value="stereo_down" />
       <arg name="decimation" value="2" />
     </include>
+
   <group ns="stereo_down/scaled_x2" if="$(arg processing)">
     <node name="stereo_image_proc" pkg="stereo_image_proc" type="stereo_image_proc">
       <rosparam file="$(find xiroi)/config/cameras/config/disparity_params_x2.yaml"/>
     </node>
   </group>
+
+  
+  <!--<node pkg="xiroi" type="image_throttle.py" name="image_throttle" output="screen" >
+  </node>-->
 
 </launch>
