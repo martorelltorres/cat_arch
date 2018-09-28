@@ -58,7 +58,6 @@ class Controller:
 
     def joystick_data_callback(self, data):
         rospy.loginfo( data.axes)
-
         forward = data.axes[6]
         clockwise_yaw = data.axes[11]
         aux = np.array([0.0, 0.0])
