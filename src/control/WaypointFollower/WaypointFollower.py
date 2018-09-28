@@ -25,6 +25,7 @@ class WaypointFollower:
         self.scale_factor = 130
         self.constant_velocity = 80
         self.depth_threshold = 3
+        self.max_mission_setpoint = rospy.get_param('max_mission_setpoint')
         self.abort_mission = False
         # Message
         self.thruster_setpoints = Setpoints()
@@ -80,7 +81,7 @@ class WaypointFollower:
         aux = np.array([0.0, 0.0])
         aux[0] = 0
         aux[1] = 0
-        self.thruster_setpoints.setpoints = aux.clip(min=0.0, max=1.0)        
+        self.thruster_setpoints.setpoints = aux.clip(min=0.0, max=self.max_mission_setpoint)        
 
     def repulsion(self):
         alpha_ref =-atan2(self.y_distance,self.x_distance)
@@ -90,7 +91,7 @@ class WaypointFollower:
         aux = np.array([0.0, 0.0])
         aux[0] = -Vr/self.scale_factor
         aux[1] = -Vl/self.scale_factor
-        self.thruster_setpoints.setpoints = aux.clip(min=-1.0, max=1.0)
+        self.thruster_setpoints.setpoints = aux.clip(min=-self.max_mission_setpoint, max=self.max_mission_setpoint)
 
     def follow(self):
         alpha_ref =-atan2(self.y_distance,self.x_distance)
@@ -98,6 +99,9 @@ class WaypointFollower:
         Vr = self.constant_velocity*(cos(angle_error)+sin(angle_error))
         Vl = self.constant_velocity*(cos(angle_error)-sin(angle_error))
         aux = np.array([0.0, 0.0])
-        aux[0] = Vr/self.scale_factor
+        aux[0] = Vr/self.scale_factor 
         aux[1] = Vl/self.scale_factor
-        self.thruster_setpoints.setpoints = aux.clip(min=-1.0, max=1.0)
+        if aux[0] < 0 and aux[1] < 0:
+          aux[0] = aux[0]*-1
+          aux[1] = aux[1]*-1
+        self.thruster_setpoints.setpoints = aux.clip(min=-self.max_mission_setpoint, max=self.max_mission_setpoint)
