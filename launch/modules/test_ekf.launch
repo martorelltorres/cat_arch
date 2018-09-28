@@ -49,7 +49,7 @@
 
     <!-- LOCALIZATION MAD-->
     <rosparam command="load" file="$(find xiroi)/config/robot_localization_with_imu.yaml" />
-    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map_mad" clear_params="true">
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map" clear_params="true">
       <remap from="odometry/filtered" to="odometry/filtered_map"/>
       <remap from="odometry/path" to="odometry/filtered_map/path"/>
     </node>
