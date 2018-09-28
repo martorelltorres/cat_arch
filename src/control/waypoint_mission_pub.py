@@ -13,9 +13,9 @@ class WaypointPublisher:
     rospy.init_node('waypoint_publisher')
     self.waypoints_lat = rospy.get_param('trajectory/latitude')
     self.waypoints_lon = rospy.get_param('trajectory/longitude')
-    self.waypoint_tolerance = rospy.get_param('waypoint/tolerance')
-    self.origin_latitude = rospy.get_param("origin/latitude")
-    self.origin_longitude = rospy.get_param("origin/longitude")
+    self.waypoint_tolerance = rospy.get_param('trajectory/tolerance')
+    self.origin_latitude = rospy.get_param("navigator/ned_origin_lat")
+    self.origin_longitude = rospy.get_param("navigator/ned_origin_lon")
     self.ned = NED.NED(self.origin_latitude, self.origin_longitude, 0.0)
     self.waypoints_y=[]
     self.waypoints_x=[]
@@ -56,7 +56,7 @@ class WaypointPublisher:
     error_x = self.current_pose.x - self.current_waypoint[0]
     error_y = self.current_pose.y - self.current_waypoint[1]
     error = sqrt(error_x*error_x+error_y*error_y)
-    if error < self.waypoint_tolerance:
+    if error < self.waypoint_tolerance[0]:
       if self.current < len(self.waypoints_x) - 1:
         print('Waypoint ' + str(self.current) + ' achieved!')
         self.current = self.current + 1
